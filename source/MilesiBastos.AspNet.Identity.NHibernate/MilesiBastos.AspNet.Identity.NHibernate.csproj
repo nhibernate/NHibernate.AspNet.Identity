@@ -32,8 +32,14 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Iesi.Collections">
+      <HintPath>..\packages\Iesi.Collections.3.2.0.4000\lib\Net35\Iesi.Collections.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.AspNet.Identity.Core">
       <HintPath>..\packages\Microsoft.AspNet.Identity.Core.1.0.0\lib\net45\Microsoft.AspNet.Identity.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="NHibernate">
+      <HintPath>..\packages\NHibernate.3.3.3.4001\lib\Net35\NHibernate.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -44,24 +50,30 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="EntityStore`1.cs" />
-    <Compile Include="IdentityResources.cs" />
     <Compile Include="IdentityRole.cs" />
     <Compile Include="IdentityUser.cs" />
-    <Compile Include="IdentityUserClaim.cs" />
-    <Compile Include="IdentityUserLogin.cs" />
-    <Compile Include="IdentityUserRole.cs" />
+    <Compile Include="IdentityUserClaim.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="IdentityUserLogin.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RoleStore`1.cs" />
-    <Compile Include="UserStore`1.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="IdentityResources.resx">
-      <DependentUpon>IdentityResources.cs</DependentUpon>
-    </EmbeddedResource>
+    <Compile Include="RoleStore`1.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UserStore`1.cs">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Sharp-Architecture\Solutions\SharpArch.Domain\SharpArch.Domain.csproj">
+      <Project>{e12e99bb-8732-441f-b3a6-861f0ce23d3d}</Project>
+      <Name>SharpArch.Domain</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />

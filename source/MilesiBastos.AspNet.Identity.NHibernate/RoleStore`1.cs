@@ -1,85 +1,78 @@
 ﻿using Microsoft.AspNet.Identity;
+using NHibernate;
+using NHibernate.Linq;
 using System;
-using System.Data.Entity;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace MilesiBastos.AspNet.Identity.NHibernate
 {
-  public class RoleStore<TRole> : IRoleStore<TRole>, IDisposable where TRole : IdentityRole
-  {
-    private bool _disposed;
-    private EntityStore<TRole> _roleStore;
-
-    public DbContext Context { get; private set; }
-
-    public RoleStore()
-      : this((DbContext) new IdentityDbContext())
+    public class RoleStore<TRole> : IRoleStore<TRole>, IDisposable where TRole : IdentityRole
     {
-    }
+        private bool _disposed;
 
-    public RoleStore(DbContext context)
-    {
-      if (context == null)
-        throw new ArgumentNullException("context");
-      this.Context = context;
-      this._roleStore = new EntityStore<TRole>(context);
-    }
+        public ISession Context { get; private set; }
 
-    public Task<TRole> FindByIdAsync(string roleId)
-    {
-      this.ThrowIfDisposed();
-      return this._roleStore.GetByIdAsync((object) roleId);
-    }
+        public RoleStore(ISession context)
+        {
+            if (context == null)
+                throw new ArgumentNullException("context");
+            this.Context = context;
+        }
 
-    public Task<TRole> FindByNameAsync(string roleName)
-    {
-      this.ThrowIfDisposed();
-      return Task.FromResult<TRole>(Queryable.FirstOrDefault<TRole>(Queryable.Where<TRole>(this._roleStore.EntitySet, (Expression<Func<TRole, bool>>) (u => u.Name.ToUpper() == roleName.ToUpper()))));
-    }
+        public Task<TRole> FindByIdAsync(string roleId)
+        {
+            this.ThrowIfDisposed();
+            return Task.FromResult(Context.Get<TRole>((object)roleId));
+        }
 
-    public virtual async Task CreateAsync(TRole role)
-    {
-      this.ThrowIfDisposed();
-      if ((object) role == null)
-        throw new ArgumentNullException("role");
-      this._roleStore.Create(role);
-      int num = await this.Context.SaveChangesAsync();
-    }
+        public Task<TRole> FindByNameAsync(string roleName)
+        {
+            this.ThrowIfDisposed();
+            return Task.FromResult<TRole>(Queryable.FirstOrDefault<TRole>(Queryable.Where<TRole>(this.Context.Query<TRole>(), (Expression<Func<TRole, bool>>)(u => u.Name.ToUpper() == roleName.ToUpper()))));
+        }
 
-    public virtual Task DeleteAsync(TRole role)
-    {
-      throw new NotSupportedException();
-    }
+        public virtual async Task CreateAsync(TRole role)
+        {
+            this.ThrowIfDisposed();
+            if ((object)role == null)
+                throw new ArgumentNullException("role");
+            await Task.FromResult(Context.Save(role));
+        }
 
-    public virtual async Task UpdateAsync(TRole role)
-    {
-      this.ThrowIfDisposed();
-      if ((object) role == null)
-        throw new ArgumentNullException("role");
-      int num = await this.Context.SaveChangesAsync();
-    }
+        public virtual Task DeleteAsync(TRole role)
+        {
+            throw new NotSupportedException();
+        }
 
-    private void ThrowIfDisposed()
-    {
-      if (this._disposed)
-        throw new ObjectDisposedException(this.GetType().Name);
-    }
+        public virtual async Task UpdateAsync(TRole role)
+        {
+            this.ThrowIfDisposed();
+            if ((object)role == null)
+                throw new ArgumentNullException("role");
+            Context.Update(role);
+            int num = await Task.FromResult(0);
+        }
 
-    public void Dispose()
-    {
-      this.Dispose(true);
-      GC.SuppressFinalize((object) this);
-    }
+        private void ThrowIfDisposed()
+        {
+            if (this._disposed)
+                throw new ObjectDisposedException(this.GetType().Name);
+        }
 
-    protected virtual void Dispose(bool disposing)
-    {
-      if (disposing && !this._disposed)
-        this.Context.Dispose();
-      this._disposed = true;
-      this.Context = (DbContext) null;
-      this._roleStore = (EntityStore<TRole>) null;
+        public void Dispose()
+        {
+            this.Dispose(true);
+            GC.SuppressFinalize((object)this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing && !this._disposed)
+                this.Context.Dispose();
+            this._disposed = true;
+            this.Context = (ISession)null;
+        }
     }
-  }
 }

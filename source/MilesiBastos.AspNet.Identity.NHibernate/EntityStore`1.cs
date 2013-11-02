@@ -1,49 +1,45 @@
-﻿using System;
-using System.Data.Entity;
-using System.Data.Entity.Infrastructure;
+﻿using NHibernate;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace MilesiBastos.AspNet.Identity.NHibernate
 {
-  internal class EntityStore<TEntity> where TEntity : class
-  {
-    public DbContext Context { get; private set; }
-
-    public IQueryable<TEntity> EntitySet
+    internal class EntityStore<TEntity> where TEntity : class
     {
-      get
-      {
-        return (IQueryable<TEntity>) this.DbEntitySet;
-      }
-    }
+        public ISession Context { get; private set; }
 
-    public DbSet<TEntity> DbEntitySet { get; private set; }
+        public IQueryable<TEntity> EntitySet
+        {
+            get
+            {
+                return (IQueryable<TEntity>)this.DbEntitySet;
+            }
+        }
 
-    public EntityStore(DbContext context)
-    {
-      if (context == null)
-        throw new ArgumentNullException("context");
-      this.Context = context;
-      this.DbEntitySet = (DbSet<TEntity>) context.Set<TEntity>();
-    }
+        public DbSet<TEntity> DbEntitySet { get; private set; }
 
-    public virtual Task<TEntity> GetByIdAsync(object id)
-    {
-      return this.DbEntitySet.FindAsync(new object[1]
-      {
-        id
-      });
-    }
+        public EntityStore(ISession context)
+        {
+            if (context == null)
+                throw new ArgumentNullException("context");
+            this.Context = context;
+            this.DbEntitySet = (DbSet<TEntity>)context.Set<TEntity>();
+        }
 
-    public void Create(TEntity entity)
-    {
-      this.DbEntitySet.Add(entity);
-    }
+        public virtual Task<TEntity> GetByIdAsync(object id)
+        {
+            return this.DbEntitySet.FindAsync(new object[1] { id });
+        }
 
-    public void Delete(TEntity entity)
-    {
-      ((DbEntityEntry<TEntity>) this.Context.Entry<TEntity>((M0) entity)).set_State((EntityState) 8);
+        public void Create(TEntity entity)
+        {
+            this.DbEntitySet.Add(entity);
+        }
+
+        public void Delete(TEntity entity)
+        {
+            ((DbEntityEntry<TEntity>)this.Context.Entry<TEntity>((M0)entity)).set_State((EntityState)8);
+        }
     }
-  }
 }

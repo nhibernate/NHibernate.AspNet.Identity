@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNet.Identity;
+using MilesiBastos.AspNet.Identity.NHibernate.Properties;
 using NHibernate;
 using NHibernate.Linq;
 using System;
@@ -12,7 +13,7 @@ using System.Threading.Tasks;
 namespace MilesiBastos.AspNet.Identity.NHibernate
 {
     /// <summary>
-    /// Implements IUserStore using EntityFramework where TUser is the entity type of the user being stored
+    /// Implements IUserStore using NHibernate where TUser is the entity type of the user being stored
     /// </summary>
     /// <typeparam name="TUser"/>
     public class UserStore<TUser> : IUserLoginStore<TUser>, IUserClaimStore<TUser>, IUserRoleStore<TUser>, IUserPasswordStore<TUser>, IUserSecurityStampStore<TUser>, IUserStore<TUser>, IDisposable where TUser : IdentityUser
@@ -21,31 +22,13 @@ namespace MilesiBastos.AspNet.Identity.NHibernate
 
         public ISession Context { get; private set; }
 
-        public bool DisposeContext { get; set; }
-
-        public bool AutoSaveChanges { get; set; }
-
-        //public UserStore()
-        //  : this((DbContext) new IdentityDbContext<TUser>())
-        //{
-        //  this.DisposeContext = true;
-        //}
-
         public UserStore(ISession context)
         {
             if (context == null)
                 throw new ArgumentNullException("context");
-            this.Context = context;
-            this.AutoSaveChanges = true;
-        }
 
-        //private async Task SaveChanges()
-        //{
-        //  if (this.AutoSaveChanges)
-        //  {
-        //    int num = await this.Context.SaveChangesAsync();
-        //  }
-        //}
+            this.Context = context;
+        }
 
         public virtual Task<TUser> FindByIdAsync(string userId)
         {
@@ -95,7 +78,7 @@ namespace MilesiBastos.AspNet.Identity.NHibernate
 
         protected virtual void Dispose(bool disposing)
         {
-            if (this.DisposeContext && disposing && this.Context != null)
+            if (disposing && this.Context != null)
                 this.Context.Dispose();
             this._disposed = true;
             this.Context = (ISession)null;
@@ -231,22 +214,16 @@ namespace MilesiBastos.AspNet.Identity.NHibernate
             if ((object)user == null)
                 throw new ArgumentNullException("user");
             if (string.IsNullOrWhiteSpace(role))
-                throw new ArgumentException(IdentityResources.ValueCannotBeNullOrEmpty, "role");
-            IdentityRole identityRole = Queryable.SingleOrDefault<IdentityRole>((IQueryable<IdentityRole>)this._roleStore.DbEntitySet, (Expression<Func<IdentityRole, bool>>)(r => r.Name.ToUpper() == role.ToUpper()));
+                throw new ArgumentException(Resources.ValueCannotBeNullOrEmpty, "role");
+
+            IdentityRole identityRole = Queryable.SingleOrDefault<IdentityRole>((IQueryable<IdentityRole>)this.Context.Query<IdentityRole>(), (Expression<Func<IdentityRole, bool>>)(r => r.Name.ToUpper() == role.ToUpper()));
             if (identityRole == null)
             {
-                throw new InvalidOperationException(string.Format((IFormatProvider)CultureInfo.CurrentCulture, IdentityResources.RoleNotFound, new object[1]
-        {
-          (object) role
-        }));
+                throw new InvalidOperationException(string.Format((IFormatProvider)CultureInfo.CurrentCulture, Resources.RoleNotFound, new object[1] { (object) role }));
             }
             else
             {
-                user.Roles.Add(new IdentityUserRole()
-                {
-                    User = (IdentityUser)user,
-                    Role = identityRole
-                });
+                user.Roles.Add(identityRole);
                 return (Task)Task.FromResult<int>(0);
             }
         }
@@ -257,13 +234,15 @@ namespace MilesiBastos.AspNet.Identity.NHibernate
             if ((object)user == null)
                 throw new ArgumentNullException("user");
             if (string.IsNullOrWhiteSpace(role))
-                throw new ArgumentException(IdentityResources.ValueCannotBeNullOrEmpty, "role");
-            IdentityUserRole identityUserRole = Enumerable.FirstOrDefault<IdentityUserRole>(Enumerable.Where<IdentityUserRole>((IEnumerable<IdentityUserRole>)user.Roles, (Func<IdentityUserRole, bool>)(r => r.Role.Name.ToUpper() == role.ToUpper())));
+                throw new ArgumentException(Resources.ValueCannotBeNullOrEmpty, "role");
+
+            IdentityRole identityUserRole = Enumerable.FirstOrDefault<IdentityRole>(Enumerable.Where<IdentityRole>((IEnumerable<IdentityRole>)user.Roles, (Func<IdentityRole, bool>)(r => r.Name.ToUpper() == role.ToUpper())));
             if (identityUserRole != null)
             {
                 user.Roles.Remove(identityUserRole);
-                this._userRoles.Remove(identityUserRole);
+                this.Context.Delete(identityUserRole);
             }
+
             return (Task)Task.FromResult<int>(0);
         }
 
@@ -273,7 +252,7 @@ namespace MilesiBastos.AspNet.Identity.NHibernate
             if ((object)user == null)
                 throw new ArgumentNullException("user");
             else
-                return Task.FromResult<IList<string>>((IList<string>)Enumerable.ToList<string>(Enumerable.Select<IdentityUserRole, string>((IEnumerable<IdentityUserRole>)user.Roles, (Func<IdentityUserRole, string>)(u => u.Role.Name))));
+                return Task.FromResult<IList<string>>((IList<string>)Enumerable.ToList<string>(Enumerable.Select<IdentityRole, string>((IEnumerable<IdentityRole>)user.Roles, (Func<IdentityRole, string>)(u => u.Name))));
         }
 
         public virtual Task<bool> IsInRoleAsync(TUser user, string role)
@@ -282,9 +261,9 @@ namespace MilesiBastos.AspNet.Identity.NHibernate
             if ((object)user == null)
                 throw new ArgumentNullException("user");
             if (string.IsNullOrWhiteSpace(role))
-                throw new ArgumentException(IdentityResources.ValueCannotBeNullOrEmpty, "role");
+                throw new ArgumentException(Resources.ValueCannotBeNullOrEmpty, "role");
             else
-                return Task.FromResult<bool>(Enumerable.Any<IdentityUserRole>((IEnumerable<IdentityUserRole>)user.Roles, (Func<IdentityUserRole, bool>)(r => r.Role.Name.ToUpper() == role.ToUpper())));
+                return Task.FromResult<bool>(Enumerable.Any<IdentityRole>((IEnumerable<IdentityRole>)user.Roles, (Func<IdentityRole, bool>)(r => r.Name.ToUpper() == role.ToUpper())));
         }
 
         public Task SetPasswordHashAsync(TUser user, string passwordHash)

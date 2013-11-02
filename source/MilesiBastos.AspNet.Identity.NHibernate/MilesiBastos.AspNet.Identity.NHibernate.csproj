@@ -70,6 +70,7 @@
     <Compile Include="UserStore`1.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="UUIDHexCombGeneratorDef.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

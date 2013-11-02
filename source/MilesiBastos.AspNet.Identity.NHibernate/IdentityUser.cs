@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNet.Identity;
+using NHibernate.Mapping.ByCode.Conformist;
 using SharpArch.Domain.DomainModel;
 using System;
 using System.Collections.Generic;
@@ -32,4 +33,15 @@ namespace MilesiBastos.AspNet.Identity.NHibernate
             this.UserName = userName;
         }
     }
+
+    public class IdentityUserMap : ClassMapping<IdentityUser>
+    {
+        public IdentityUserMap()
+        {
+            Table("AspNetUsers");
+            Id(x => x.Id, m => m.Generator(new UUIDHexCombGeneratorDef("D")));
+            Bag(x => x.Roles, m => m.Table("AspNetUserRoles"));
+        }
+    }
+
 }

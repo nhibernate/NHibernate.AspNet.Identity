@@ -19,6 +19,10 @@ namespace MilesiBastos.AspNet.Identity.NHibernate
         {
             Table("AspNetUserClaims");
             Id(x => x.Id, m => m.Generator(Generators.Identity));
+            Property(x => x.ClaimType);
+            Property(x => x.ClaimValue);
+
+            ManyToOne(x => x.User, m => m.Column("User_Id"));
         }
     }
 

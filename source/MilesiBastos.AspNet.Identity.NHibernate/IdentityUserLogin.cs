@@ -1,8 +1,9 @@
 ﻿using NHibernate.Mapping.ByCode.Conformist;
+using SharpArch.Domain.DomainModel;
 
 namespace MilesiBastos.AspNet.Identity.NHibernate
 {
-    public class IdentityUserLogin
+    public class IdentityUserLogin : ValueObject
     {
         public virtual string LoginProvider { get; set; }
 
@@ -17,7 +18,7 @@ namespace MilesiBastos.AspNet.Identity.NHibernate
         {
             Table("AspNetUserLogins");
             ComposedId(m => {
-                m.Property(x => x.User);
+                m.ManyToOne(x => x.User, c => c.Column("UserId"));
                 m.Property(x => x.LoginProvider);
                 m.Property(x => x.ProviderKey);
             });

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace MilesiBastos.AspNet.Identity.NHibernate
 {
-    internal class UUIDHexCombGeneratorDef : IGeneratorDef
+    public class UUIDHexCombGeneratorDef : IGeneratorDef
     {
         private readonly object param;
 

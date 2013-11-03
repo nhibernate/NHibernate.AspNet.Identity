@@ -8,9 +8,9 @@ namespace MilesiBastos.AspNet.Identity.NHibernate
 {
     public class IdentityRole : EntityWithTypedId<string>, IRole
     {
-        public string Name { get; set; }
+        public virtual string Name { get; set; }
 
-        public virtual ICollection<IdentityUser> Users { get; private set; }
+        public virtual ICollection<IdentityUser> Users { get; protected set; }
 
         public IdentityRole()
         {
@@ -31,7 +31,11 @@ namespace MilesiBastos.AspNet.Identity.NHibernate
             Table("AspNetRoles");
             Id(x => x.Id, m => m.Generator(new UUIDHexCombGeneratorDef("D")));
             Property(x => x.Name, m => m.NotNullable(false));
-            Bag(x => x.Users, m => m.Table("AspNetUserRoles"));
+            Bag(x => x.Users, map => {
+                map.Table("AspNetUserRoles");
+                map.Cascade(Cascade.None);
+                map.Key(k => k.Column("RoleId"));
+            }, rel => rel.ManyToMany(p => p.Column("UserId")));
         }
     }
 }

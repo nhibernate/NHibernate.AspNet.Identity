@@ -76,7 +76,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Sharp-Architecture\Solutions\SharpArch.Domain\SharpArch.Domain.csproj">
+    <ProjectReference Include="..\..\..\Sharp-Architecture\Solutions\SharpArch.Domain\SharpArch.Domain.csproj">
       <Project>{e12e99bb-8732-441f-b3a6-861f0ce23d3d}</Project>
       <Name>SharpArch.Domain</Name>
     </ProjectReference>

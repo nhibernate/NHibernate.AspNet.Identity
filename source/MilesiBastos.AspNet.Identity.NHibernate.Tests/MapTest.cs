@@ -1,11 +1,15 @@
-﻿using FluentNHibernate.Testing;
+﻿using System;
+using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using NHibernate.Cfg;
-using NHibernate.Mapping.ByCode;
-using NHibernate.Tool.hbm2ddl;
+using FluentNHibernate.Testing;
+using FluentNHibernate.Cfg.Db;
 using SharpArch.NHibernate;
-using System;
+using NHibernate.Mapping.ByCode;
+using SharpArch.Domain.DomainModel;
+using NHibernate.Cfg;
+using NHibernate;
 using System.IO;
+using NHibernate.Tool.hbm2ddl;
 
 namespace MilesiBastos.AspNet.Identity.NHibernate.Tests
 {
@@ -15,8 +19,7 @@ namespace MilesiBastos.AspNet.Identity.NHibernate.Tests
         [TestMethod]
         public void CanCorrectlyMapIdentityUser()
         {
-            var mapper = new ConventionModelMapper();
-
+            var mapper = new ModelMapper();
             mapper.AddMapping<IdentityUserMap>();
             mapper.AddMapping<IdentityRoleMap>();
             mapper.AddMapping<IdentityUserClaimMap>();
@@ -24,18 +27,17 @@ namespace MilesiBastos.AspNet.Identity.NHibernate.Tests
 
             var mapping = mapper.CompileMappingForAllExplicitlyAddedEntities();
 
-            var configuration = NHibernateSession.Init(
-                new SimpleSessionStorage(), mapping, "sqlite-nhibernate-config.xml");
+            var configuration = new Configuration();
+            configuration.Configure("sqlite-nhibernate-config.xml");
+            configuration.AddDeserializedMapping(mapping, null);
 
+            var factory = configuration.BuildSessionFactory();
+            var session = factory.OpenSession();
             BuildSchema(configuration);
-
-            var session = NHibernateSession.Current;
 
             new PersistenceSpecification<IdentityUser>(session)
                 .CheckProperty(c => c.UserName, "John")
                 .VerifyTheMappings();
-
-            NHibernateSession.Reset();
         }
 
         private static void BuildSchema(Configuration config)

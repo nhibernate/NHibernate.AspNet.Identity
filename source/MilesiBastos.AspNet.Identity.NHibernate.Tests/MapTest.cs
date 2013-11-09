@@ -1,15 +1,10 @@
-﻿using System;
-using System.Linq;
+﻿using FluentNHibernate.Testing;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using FluentNHibernate.Testing;
-using FluentNHibernate.Cfg.Db;
-using SharpArch.NHibernate;
-using NHibernate.Mapping.ByCode;
-using SharpArch.Domain.DomainModel;
 using NHibernate.Cfg;
-using NHibernate;
-using System.IO;
+using NHibernate.Mapping.ByCode;
 using NHibernate.Tool.hbm2ddl;
+using System;
+using System.IO;
 
 namespace MilesiBastos.AspNet.Identity.NHibernate.Tests
 {

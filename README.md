@@ -10,7 +10,7 @@ Entity Framework provider (Microsoft.AspNet.Identity.EntityFramework).
 
 ## Features ##
 * Drop-in replacement ASP.NET Identity with NHibernate as the backing store.
-* Requires only 2 document types, while EntityFramework requires 5 tables
+* Based on same schema requirede by EntityFramework for compatibility model
 * Contains the same IdentityUser class used by the EntityFramework provider in the MVC 5 project template.
 * Supports additional profile properties on your application's user model.
 * Provides UserStore<TUser> implementation that implements the same interfaces as the EntityFramework version:
@@ -42,11 +42,23 @@ Install-Package NHibernate.AspNet.Identity
     * Add the connection string name to the constructor of the UserStore. Or empty constructor will use DefaultConnection
 
 ```C#
-public AccountController()
-{
-    this.UserManager = new UserManager<ApplicationUser>(
-        new UserStore<ApplicationUser>("NHibernate");
-}
+    var mapper = new ModelMapper();
+    mapper.AddMapping<IdentityUserMap>();
+    mapper.AddMapping<IdentityRoleMap>();
+    mapper.AddMapping<IdentityUserClaimMap>();
+    mapper.AddMapping<IdentityUserLoginMap>();
+
+    var mapping = mapper.CompileMappingForAllExplicitlyAddedEntities();
+
+    var configuration = new Configuration();
+    configuration.Configure("sqlite-nhibernate-config.xml");
+    configuration.AddDeserializedMapping(mapping, null);
+
+    var factory = configuration.BuildSessionFactory();
+    var session = factory.OpenSession();
+
+    var userManager = new UserManager<ApplicationUser>(
+        new UserStore<ApplicationUser>(session);
 ```
 
 ## Thanks To ##

@@ -6,8 +6,8 @@
     <ProjectGuid>{4AB55157-6F8F-423C-9C6F-A3A92B2101CE}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>MilesiBastos.AspNet.Identity.NHibernate.Tests</RootNamespace>
-    <AssemblyName>MilesiBastos.AspNet.Identity.NHibernate.Tests</AssemblyName>
+    <RootNamespace>NHibernate.AspNet.Identity.Tests</RootNamespace>
+    <AssemblyName>NHibernate.AspNet.Identity.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -87,9 +87,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\MilesiBastos.AspNet.Identity.NHibernate\MilesiBastos.AspNet.Identity.NHibernate.csproj">
+    <ProjectReference Include="..\NHibernate.AspNet.Identity\NHibernate.AspNet.Identity.csproj">
       <Project>{c620faae-f1b6-479e-9959-c46c20ed0a8a}</Project>
-      <Name>MilesiBastos.AspNet.Identity.NHibernate</Name>
+      <Name>NHibernate.AspNet.Identity</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

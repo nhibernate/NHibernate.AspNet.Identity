@@ -2,7 +2,7 @@
 using NHibernate.Mapping.ByCode.Conformist;
 using SharpArch.Domain.DomainModel;
 
-namespace MilesiBastos.AspNet.Identity.NHibernate
+namespace NHibernate.AspNet.Identity
 {
     public class IdentityUserClaim : EntityWithTypedId<int>
     {

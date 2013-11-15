@@ -5,7 +5,7 @@ using SharpArch.Domain.DomainModel;
 using System;
 using System.Collections.Generic;
 
-namespace MilesiBastos.AspNet.Identity.NHibernate
+namespace NHibernate.AspNet.Identity
 {
     public class IdentityUser : EntityWithTypedId<string>, IUser
     {

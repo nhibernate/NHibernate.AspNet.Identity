@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace MilesiBastos.AspNet.Identity.NHibernate.Properties {
+namespace NHibernate.AspNet.Identity.Properties {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace MilesiBastos.AspNet.Identity.NHibernate.Properties {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("MilesiBastos.AspNet.Identity.NHibernate.Properties.Resources", typeof(Resources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("NHibernate.AspNet.Identity.Properties.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;

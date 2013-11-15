@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MilesiBastos.AspNet.Identity.NHibernate
+namespace NHibernate.AspNet.Identity
 {
     public class UUIDHexCombGeneratorDef : IGeneratorDef
     {

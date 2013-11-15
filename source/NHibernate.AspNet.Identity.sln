@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
 VisualStudioVersion = 12.0.21005.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MilesiBastos.AspNet.Identity.NHibernate", "MilesiBastos.AspNet.Identity.NHibernate\MilesiBastos.AspNet.Identity.NHibernate.csproj", "{C620FAAE-F1B6-479E-9959-C46C20ED0A8A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NHibernate.AspNet.Identity", "NHibernate.AspNet.Identity\NHibernate.AspNet.Identity.csproj", "{C620FAAE-F1B6-479E-9959-C46C20ED0A8A}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{B4B93010-9348-456C-9F18-1305854364F9}"
 	ProjectSection(SolutionItems) = preProject
@@ -11,7 +11,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{B4B930
 		.nuget\NuGet.targets = .nuget\NuGet.targets
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MilesiBastos.AspNet.Identity.NHibernate.Tests", "MilesiBastos.AspNet.Identity.NHibernate.Tests\MilesiBastos.AspNet.Identity.NHibernate.Tests.csproj", "{4AB55157-6F8F-423C-9C6F-A3A92B2101CE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NHibernate.AspNet.Identity.Tests", "NHibernate.AspNet.Identity.Tests\NHibernate.AspNet.Identity.Tests.csproj", "{4AB55157-6F8F-423C-9C6F-A3A92B2101CE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

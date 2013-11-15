@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("MilesiBastos.AspNet.Identity.NHibernate.Tests")]
+[assembly: AssemblyTitle("NHibernate.AspNet.Identity.Tests")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("MilesiBastos.AspNet.Identity.NHibernate.Tests")]
+[assembly: AssemblyProduct("NHibernate.AspNet.Identity.Tests")]
 [assembly: AssemblyCopyright("Copyright ©  2013")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

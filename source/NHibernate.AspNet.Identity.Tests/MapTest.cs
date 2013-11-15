@@ -6,7 +6,7 @@ using NHibernate.Tool.hbm2ddl;
 using System;
 using System.IO;
 
-namespace MilesiBastos.AspNet.Identity.NHibernate.Tests
+namespace NHibernate.AspNet.Identity.Tests
 {
     [TestClass]
     public class MapTest

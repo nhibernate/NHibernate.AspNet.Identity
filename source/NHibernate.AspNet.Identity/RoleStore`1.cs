@@ -6,7 +6,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 
-namespace MilesiBastos.AspNet.Identity.NHibernate
+namespace NHibernate.AspNet.Identity
 {
     public class RoleStore<TRole> : IRoleStore<TRole>, IDisposable where TRole : IdentityRole
     {

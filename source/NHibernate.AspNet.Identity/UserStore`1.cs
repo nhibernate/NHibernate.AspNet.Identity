@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNet.Identity;
-using MilesiBastos.AspNet.Identity.NHibernate.Properties;
+using NHibernate.AspNet.Identity.Properties;
 using NHibernate;
 using NHibernate.Linq;
 using System;
@@ -10,7 +10,7 @@ using System.Linq.Expressions;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
-namespace MilesiBastos.AspNet.Identity.NHibernate
+namespace NHibernate.AspNet.Identity
 {
     /// <summary>
     /// Implements IUserStore using NHibernate where TUser is the entity type of the user being stored

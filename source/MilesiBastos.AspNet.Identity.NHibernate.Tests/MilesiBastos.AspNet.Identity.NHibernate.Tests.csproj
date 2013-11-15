@@ -46,10 +46,22 @@
     <Reference Include="Microsoft.AspNet.Identity.Core">
       <HintPath>..\..\packages\Microsoft.AspNet.Identity.Core.1.0.0\lib\net45\Microsoft.AspNet.Identity.Core.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Practices.ServiceLocation, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\CommonServiceLocator.1.0\lib\NET35\Microsoft.Practices.ServiceLocation.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Newtonsoft.Json.5.0.8\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="NHibernate">
       <HintPath>..\..\packages\NHibernate.3.3.3.4001\lib\Net35\NHibernate.dll</HintPath>
     </Reference>
+    <Reference Include="SharpArch.Domain, Version=4.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\MilesiBastos.SharpArch.Domain.4.0.0-Beta-2000\lib\NET40\SharpArch.Domain.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Data.SQLite">
       <HintPath>..\..\packages\System.Data.SQLite.1.0.89.0\lib\net45\System.Data.SQLite.dll</HintPath>
     </Reference>
@@ -75,14 +87,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Sharp-Architecture\Solutions\SharpArch.Domain\SharpArch.Domain.csproj">
-      <Project>{e12e99bb-8732-441f-b3a6-861f0ce23d3d}</Project>
-      <Name>SharpArch.Domain</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\Sharp-Architecture\Solutions\SharpArch.NHibernate\SharpArch.NHibernate.csproj">
-      <Project>{0bd77f13-8df6-4c16-9508-33aa4cf0677a}</Project>
-      <Name>SharpArch.NHibernate</Name>
-    </ProjectReference>
     <ProjectReference Include="..\MilesiBastos.AspNet.Identity.NHibernate\MilesiBastos.AspNet.Identity.NHibernate.csproj">
       <Project>{c620faae-f1b6-479e-9959-c46c20ed0a8a}</Project>
       <Name>MilesiBastos.AspNet.Identity.NHibernate</Name>

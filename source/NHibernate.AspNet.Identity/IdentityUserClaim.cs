@@ -1,6 +1,6 @@
 ﻿using NHibernate.Mapping.ByCode;
 using NHibernate.Mapping.ByCode.Conformist;
-using SharpArch.Domain.DomainModel;
+using NHibernate.AspNet.Identity.DomainModel;
 
 namespace NHibernate.AspNet.Identity
 {

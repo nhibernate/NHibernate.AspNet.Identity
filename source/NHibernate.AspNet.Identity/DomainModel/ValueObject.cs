@@ -87,7 +87,7 @@
                 to the properties of a value object's properties is misleading and should be removed. 
                 Alternatively, you can inherit from Entity if that fits your needs better.";
 
-            if (!invalidlyDecoratedProperties.Any())
+            if (invalidlyDecoratedProperties.Any())
                 throw new InvalidOperationException(message);
 
             return this.GetType().GetProperties();

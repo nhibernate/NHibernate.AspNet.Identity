@@ -9,20 +9,5 @@ namespace NHibernate.AspNet.Identity
 
         public virtual string ProviderKey { get; set; }
 
-        public virtual IdentityUser User { get; set; }
     }
-
-    public class IdentityUserLoginMap : ClassMapping<IdentityUserLogin>
-    {
-        public IdentityUserLoginMap()
-        {
-            Table("AspNetUserLogins");
-            ComposedId(m => {
-                m.ManyToOne(x => x.User, c => c.Column("UserId"));
-                m.Property(x => x.LoginProvider);
-                m.Property(x => x.ProviderKey);
-            });
-        }
-    }
-
 }

@@ -1,14 +1,14 @@
-﻿using Microsoft.AspNet.Identity;
-using NHibernate.AspNet.Identity.Properties;
-using NHibernate;
-using NHibernate.Linq;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using System.Transactions;
+using Microsoft.AspNet.Identity;
+using NHibernate.AspNet.Identity.Properties;
+using NHibernate.Linq;
 
 namespace NHibernate.AspNet.Identity
 {
@@ -90,12 +90,12 @@ namespace NHibernate.AspNet.Identity
             if (login == null)
                 throw new ArgumentNullException("login");
 
-            IdentityUser entity = await Task.FromResult(Queryable
-                .FirstOrDefault<IdentityUser>(
-                    (IQueryable<IdentityUser>)Queryable.Select<IdentityUserLogin, IdentityUser>(
-                        Queryable.Where<IdentityUserLogin>(
-                            (IQueryable<IdentityUserLogin>)this.Context.Query<UserLoginInfo>(), (Expression<Func<IdentityUserLogin, bool>>)(l => l.LoginProvider == login.LoginProvider && l.ProviderKey == login.ProviderKey)),
-                            (Expression<Func<IdentityUserLogin, IdentityUser>>)(l => l.User))));
+            var query = from u in this.Context.Query<IdentityUser>()
+                        from l in u.Logins
+                        where l.LoginProvider == login.LoginProvider && l.ProviderKey == login.ProviderKey
+                        select u;
+
+            IdentityUser entity = await Task.FromResult(query.SingleOrDefault());
 
             return entity as TUser;
         }
@@ -108,13 +108,17 @@ namespace NHibernate.AspNet.Identity
             if (login == null)
                 throw new ArgumentNullException("login");
 
-            user.Logins.Add(new IdentityUserLogin()
+            using (var transaction = new TransactionScope(TransactionScopeOption.Required))
             {
-                User = (IdentityUser)user,
-                ProviderKey = login.ProviderKey,
-                LoginProvider = login.LoginProvider
-            });
+                user.Logins.Add(new IdentityUserLogin()
+                {
+                    ProviderKey = login.ProviderKey,
+                    LoginProvider = login.LoginProvider
+                });
 
+                this.Context.SaveOrUpdate(user);
+                transaction.Complete();
+            }
             return (Task)Task.FromResult<int>(0);
         }
 
@@ -126,17 +130,15 @@ namespace NHibernate.AspNet.Identity
             if (login == null)
                 throw new ArgumentNullException("login");
 
-            IdentityUserLogin identityUserLogin = Enumerable.SingleOrDefault<IdentityUserLogin>(Enumerable.Where<IdentityUserLogin>((IEnumerable<IdentityUserLogin>)user.Logins, (Func<IdentityUserLogin, bool>)(l =>
+            var info = user.Logins.SingleOrDefault(x => x.LoginProvider == login.LoginProvider && x.ProviderKey == login.ProviderKey);
+            if (info != null)
             {
-                if (l.LoginProvider == login.LoginProvider && l.User == (object)user)
-                    return l.ProviderKey == login.ProviderKey;
-                else
-                    return false;
-            })));
-            if (identityUserLogin != null)
-            {
-                user.Logins.Remove(identityUserLogin);
-                this.Context.Delete(identityUserLogin);
+                using (var transaction = new TransactionScope(TransactionScopeOption.Required))
+                {
+                    user.Logins.Remove(info);
+                    this.Context.Update(user);
+                    transaction.Complete();
+                }
             }
             return (Task)Task.FromResult<int>(0);
         }
@@ -219,7 +221,7 @@ namespace NHibernate.AspNet.Identity
             IdentityRole identityRole = Queryable.SingleOrDefault<IdentityRole>((IQueryable<IdentityRole>)this.Context.Query<IdentityRole>(), (Expression<Func<IdentityRole, bool>>)(r => r.Name.ToUpper() == role.ToUpper()));
             if (identityRole == null)
             {
-                throw new InvalidOperationException(string.Format((IFormatProvider)CultureInfo.CurrentCulture, Resources.RoleNotFound, new object[1] { (object) role }));
+                throw new InvalidOperationException(string.Format((IFormatProvider)CultureInfo.CurrentCulture, Resources.RoleNotFound, new object[1] { (object)role }));
             }
             else
             {

@@ -96,12 +96,13 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\packages\NHibernate.3.3.3.4001\lib\Net35\NHibernate.dll</HintPath>
     </Reference>
-    <Reference Include="SharpArch.Domain">
-      <HintPath>..\..\packages\MilesiBastos.SharpArch.Domain.4.0.2002\lib\NET40\SharpArch.Domain.dll</HintPath>
+    <Reference Include="SharpArch.Domain, Version=4.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\MilesiBastos.SharpArch.Domain.4.0.2003\lib\NET40\SharpArch.Domain.dll</HintPath>
     </Reference>
     <Reference Include="SharpArch.NHibernate, Version=4.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\Sharp-Architecture\Solutions\SharpArch.NHibernate\bin\Debug\SharpArch.NHibernate.dll</HintPath>
+      <HintPath>..\..\packages\MilesiBastos.SharpArch.NHibernate.4.0.2003\lib\NET40\SharpArch.NHibernate.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />

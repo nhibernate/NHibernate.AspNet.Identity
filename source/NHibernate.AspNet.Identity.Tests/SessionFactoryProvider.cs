@@ -27,6 +27,7 @@ namespace NHibernate.AspNet.Identity.Tests
             Name = "NHibernate.AspNet.Identity";
 
             var baseEntityToIgnore = new[] { 
+                typeof(SharpArch.Domain.DomainModel.Entity), 
                 typeof(EntityWithTypedId<int>), 
                 typeof(EntityWithTypedId<string>), 
             };
@@ -37,6 +38,7 @@ namespace NHibernate.AspNet.Identity.Tests
                 typeof(IdentityRole), 
                 typeof(IdentityUserLogin), 
                 typeof(IdentityUserClaim), 
+                typeof(Foo), 
             };
 
             var mapper = new ConventionModelMapper();
@@ -47,12 +49,15 @@ namespace NHibernate.AspNet.Identity.Tests
             mapper.AddMapping<IdentityRoleMap>();
             mapper.AddMapping<IdentityUserClaimMap>();
 
-            var mapping = mapper.CompileMappingFor(allEntities);
-            Console.WriteLine(mapping.AsString());
+            var mapping = mapper.CompileMappingForEach(allEntities);
 
             _configuration = new Configuration();
             _configuration.Configure("sqlite-nhibernate-config.xml");
-            _configuration.AddDeserializedMapping(mapping, null);
+            foreach (var map in mapping)
+            {
+                Console.WriteLine(map.AsString());
+                _configuration.AddDeserializedMapping(map, null);
+            }
 
 
             //log4net.Config.XmlConfigurator.Configure();

@@ -24,6 +24,15 @@ namespace NHibernate.AspNet.Identity.Tests
         }
 
         [TestMethod]
+        public void CanCorrectlyMapFoo()
+        {
+            new PersistenceSpecification<Foo>(_session)
+                .CheckProperty(c => c.String, "Foo")
+                .CheckReference(r => r.User, new ApplicationUser { UserName = "FooUser" })
+                .VerifyTheMappings();
+        }
+
+        [TestMethod]
         public void CanCorrectlyMapIdentityUser()
         {
             new PersistenceSpecification<IdentityUser>(_session)

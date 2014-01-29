@@ -38,8 +38,8 @@ namespace NHibernate.AspNet.Identity.Tests
             };
 
             var mapper = new ConventionModelMapper();
-            DefineBaseClass(mapper, baseEntityToIgnore);
-            mapper.IsComponent((type, declared) => typeof(ValueObject).IsAssignableFrom(type));
+            //DefineBaseClass(mapper, baseEntityToIgnore);
+            //mapper.IsComponent((type, declared) => typeof(ValueObject).IsAssignableFrom(type));
 
             mapper.AddMapping<IdentityUserMap>();
             mapper.AddMapping<IdentityRoleMap>();
@@ -47,13 +47,12 @@ namespace NHibernate.AspNet.Identity.Tests
 
             var mapping = mapper.CompileMappingForAllExplicitlyAddedEntities();
             //var mapping = mapper.CompileMappingFor(allEntities);
+            Console.WriteLine(mapping.AsString());
 
             _configuration = new Configuration();
             _configuration.Configure("sqlite-nhibernate-config.xml");
             _configuration.AddDeserializedMapping(mapping, null);
 
-            var outputXmlMappings = mapping.AsString();
-            Console.WriteLine(outputXmlMappings);
 
             //log4net.Config.XmlConfigurator.Configure();
             SessionFactory = _configuration.BuildSessionFactory();

@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.21005.1
+VisualStudioVersion = 12.0.30110.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NHibernate.AspNet.Identity", "NHibernate.AspNet.Identity\NHibernate.AspNet.Identity.csproj", "{C620FAAE-F1B6-479E-9959-C46C20ED0A8A}"
 EndProject
@@ -12,6 +12,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{B4B930
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NHibernate.AspNet.Identity.Tests", "NHibernate.AspNet.Identity.Tests\NHibernate.AspNet.Identity.Tests.csproj", "{4AB55157-6F8F-423C-9C6F-A3A92B2101CE}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Sample", "Sample", "{3FBC8B33-CB9E-48E4-8D3C-D17CFC61E71B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NHibernate.AspNet.Web", "NHibernate.AspNet.Web\NHibernate.AspNet.Web.csproj", "{64AB1955-B578-497E-AC28-2D0641BE44A7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -43,8 +47,21 @@ Global
 		{4AB55157-6F8F-423C-9C6F-A3A92B2101CE}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{4AB55157-6F8F-423C-9C6F-A3A92B2101CE}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{4AB55157-6F8F-423C-9C6F-A3A92B2101CE}.Release|x86.ActiveCfg = Release|Any CPU
+		{64AB1955-B578-497E-AC28-2D0641BE44A7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{64AB1955-B578-497E-AC28-2D0641BE44A7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{64AB1955-B578-497E-AC28-2D0641BE44A7}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{64AB1955-B578-497E-AC28-2D0641BE44A7}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{64AB1955-B578-497E-AC28-2D0641BE44A7}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{64AB1955-B578-497E-AC28-2D0641BE44A7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{64AB1955-B578-497E-AC28-2D0641BE44A7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{64AB1955-B578-497E-AC28-2D0641BE44A7}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{64AB1955-B578-497E-AC28-2D0641BE44A7}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{64AB1955-B578-497E-AC28-2D0641BE44A7}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{64AB1955-B578-497E-AC28-2D0641BE44A7} = {3FBC8B33-CB9E-48E4-8D3C-D17CFC61E71B}
 	EndGlobalSection
 EndGlobal

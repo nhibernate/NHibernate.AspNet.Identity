@@ -9,6 +9,7 @@ namespace NHibernate.AspNet.Web
         public void Configuration(IAppBuilder app)
         {
             ConfigureAuth(app);
+            DataConfig.Configure(System.Web.HttpContext.Current.ApplicationInstance);
         }
     }
 }

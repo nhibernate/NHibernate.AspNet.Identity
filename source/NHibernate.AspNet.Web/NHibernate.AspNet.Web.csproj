@@ -99,11 +99,18 @@
     <Reference Include="SharpArch.Domain">
       <HintPath>..\..\packages\MilesiBastos.SharpArch.Domain.4.0.2002\lib\NET40\SharpArch.Domain.dll</HintPath>
     </Reference>
-    <Reference Include="SharpArch.NHibernate">
-      <HintPath>..\..\packages\MilesiBastos.SharpArch.NHibernate.4.0.2002\lib\NET40\SharpArch.NHibernate.dll</HintPath>
+    <Reference Include="SharpArch.NHibernate, Version=4.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\Sharp-Architecture\Solutions\SharpArch.NHibernate\bin\Debug\SharpArch.NHibernate.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Data.SQLite">
+      <HintPath>..\..\packages\System.Data.SQLite.1.0.90.0\lib\net451\System.Data.SQLite.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Data.SQLite.Linq">
+      <HintPath>..\..\packages\System.Data.SQLite.1.0.90.0\lib\net451\System.Data.SQLite.Linq.dll</HintPath>
+    </Reference>
     <Reference Include="System.Drawing" />
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
@@ -174,6 +181,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\BundleConfig.cs" />
+    <Compile Include="App_Start\DataConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
@@ -188,6 +196,10 @@
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\..\packages\System.Data.SQLite.1.0.90.0\content\net451\x86\SQLite.Interop.dll">
+      <Link>SQLite.Interop.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <Content Include="Content\bootstrap-theme.css" />
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />

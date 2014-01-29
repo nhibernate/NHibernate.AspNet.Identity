@@ -1,7 +1,8 @@
 ﻿using System;
-using System.Linq;
 using System.IO;
+using System.Linq;
 using NHibernate.AspNet.Identity.DomainModel;
+using NHibernate.AspNet.Identity.Tests.Models;
 using NHibernate.Cfg;
 using NHibernate.Mapping.ByCode;
 using NHibernate.Tool.hbm2ddl;
@@ -32,21 +33,21 @@ namespace NHibernate.AspNet.Identity.Tests
 
             var allEntities = new[] { 
                 typeof(IdentityUser), 
+                typeof(ApplicationUser), 
                 typeof(IdentityRole), 
                 typeof(IdentityUserLogin), 
                 typeof(IdentityUserClaim), 
             };
 
             var mapper = new ConventionModelMapper();
-            //DefineBaseClass(mapper, baseEntityToIgnore);
-            //mapper.IsComponent((type, declared) => typeof(ValueObject).IsAssignableFrom(type));
+            DefineBaseClass(mapper, baseEntityToIgnore);
+            mapper.IsComponent((type, declared) => typeof(ValueObject).IsAssignableFrom(type));
 
             mapper.AddMapping<IdentityUserMap>();
             mapper.AddMapping<IdentityRoleMap>();
             mapper.AddMapping<IdentityUserClaimMap>();
 
-            var mapping = mapper.CompileMappingForAllExplicitlyAddedEntities();
-            //var mapping = mapper.CompileMappingFor(allEntities);
+            var mapping = mapper.CompileMappingFor(allEntities);
             Console.WriteLine(mapping.AsString());
 
             _configuration = new Configuration();

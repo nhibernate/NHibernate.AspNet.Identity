@@ -60,6 +60,7 @@
     <Reference Include="System.Data.SQLite.Linq">
       <HintPath>..\..\packages\System.Data.SQLite.1.0.90.0\lib\net451\System.Data.SQLite.Linq.dll</HintPath>
     </Reference>
+    <Reference Include="System.Transactions" />
     <Reference Include="System.XML" />
   </ItemGroup>
   <Choose>
@@ -75,6 +76,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="UserStoreTest.cs" />
     <Compile Include="MapTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

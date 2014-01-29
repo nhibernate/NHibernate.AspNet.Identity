@@ -1,5 +1,6 @@
 ﻿using FluentNHibernate.Testing;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NHibernate.AspNet.Identity.Tests.Models;
 
 namespace NHibernate.AspNet.Identity.Tests
 {
@@ -26,6 +27,14 @@ namespace NHibernate.AspNet.Identity.Tests
         public void CanCorrectlyMapIdentityUser()
         {
             new PersistenceSpecification<IdentityUser>(_session)
+                .CheckProperty(c => c.UserName, "Lukz")
+                .VerifyTheMappings();
+        }
+
+        [TestMethod]
+        public void CanCorrectlyMapApplicationUser()
+        {
+            new PersistenceSpecification<ApplicationUser>(_session)
                 .CheckProperty(c => c.UserName, "Lukz")
                 .VerifyTheMappings();
         }

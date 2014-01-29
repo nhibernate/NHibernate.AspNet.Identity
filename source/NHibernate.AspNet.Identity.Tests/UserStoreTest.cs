@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNet.Identity;
+﻿using System.Linq;
+using System.Transactions;
+using Microsoft.AspNet.Identity;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NHibernate.AspNet.Identity.Tests.Models;
 using NHibernate.Linq;
-using System.Linq;
 
 namespace NHibernate.AspNet.Identity.Tests
 {
@@ -66,6 +68,25 @@ namespace NHibernate.AspNet.Identity.Tests
             var actual = _session.Query<IdentityUser>().FirstOrDefault(x => x.UserName == user.UserName);
             Assert.IsNull(result.Exception);
             Assert.IsFalse(actual.Logins.Any());
+        }
+
+        [TestMethod]
+        public void WhenCeateUserAsync()
+        {
+            var userManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(_session));
+            var user = new ApplicationUser() { UserName = "RealUserName" };
+
+            using (var transaction = new TransactionScope())
+            {
+                var result = userManager.CreateAsync(user, "RealPassword");
+                transaction.Complete();
+                Assert.IsNull(result.Exception);
+            }
+
+            var actual = _session.Query<ApplicationUser>().FirstOrDefault(x => x.UserName == user.UserName);
+
+            Assert.IsNotNull(actual);
+            Assert.AreEqual(user.UserName, actual.UserName);
         }
     }
 }

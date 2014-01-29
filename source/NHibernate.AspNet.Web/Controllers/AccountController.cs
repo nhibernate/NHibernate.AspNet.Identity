@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using Microsoft.AspNet.Identity;
-using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.Owin.Security;
+using NHibernate.AspNet.Identity;
 using NHibernate.AspNet.Web.Models;
+using SharpArch.NHibernate;
 
 namespace NHibernate.AspNet.Web.Controllers
 {
@@ -16,7 +13,7 @@ namespace NHibernate.AspNet.Web.Controllers
     public class AccountController : Controller
     {
         public AccountController()
-            : this(new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(new ApplicationDbContext())))
+            : this(new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(NHibernateSession.Current)))
         {
         }
 

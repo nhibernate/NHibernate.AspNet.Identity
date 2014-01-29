@@ -17,6 +17,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Sample", "Sample", "{3FBC8B
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NHibernate.AspNet.Web", "NHibernate.AspNet.Web\NHibernate.AspNet.Web.csproj", "{64AB1955-B578-497E-AC28-2D0641BE44A7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NHibernate.AspNet.Web.Specs", "NHibernate.AspNet.Web.Specs\NHibernate.AspNet.Web.Specs.csproj", "{12933FB3-BE28-4F4F-A43A-0BE836788065}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -57,11 +59,22 @@ Global
 		{64AB1955-B578-497E-AC28-2D0641BE44A7}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{64AB1955-B578-497E-AC28-2D0641BE44A7}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{64AB1955-B578-497E-AC28-2D0641BE44A7}.Release|x86.ActiveCfg = Release|Any CPU
+		{12933FB3-BE28-4F4F-A43A-0BE836788065}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{12933FB3-BE28-4F4F-A43A-0BE836788065}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{12933FB3-BE28-4F4F-A43A-0BE836788065}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{12933FB3-BE28-4F4F-A43A-0BE836788065}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{12933FB3-BE28-4F4F-A43A-0BE836788065}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{12933FB3-BE28-4F4F-A43A-0BE836788065}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{12933FB3-BE28-4F4F-A43A-0BE836788065}.Release|Any CPU.Build.0 = Release|Any CPU
+		{12933FB3-BE28-4F4F-A43A-0BE836788065}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{12933FB3-BE28-4F4F-A43A-0BE836788065}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{12933FB3-BE28-4F4F-A43A-0BE836788065}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{64AB1955-B578-497E-AC28-2D0641BE44A7} = {3FBC8B33-CB9E-48E4-8D3C-D17CFC61E71B}
+		{12933FB3-BE28-4F4F-A43A-0BE836788065} = {3FBC8B33-CB9E-48E4-8D3C-D17CFC61E71B}
 	EndGlobalSection
 EndGlobal

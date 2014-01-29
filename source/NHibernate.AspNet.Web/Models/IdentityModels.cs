@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNet.Identity.EntityFramework;
+﻿using NHibernate.AspNet.Identity;
 
 namespace NHibernate.AspNet.Web.Models
 {
@@ -7,11 +7,11 @@ namespace NHibernate.AspNet.Web.Models
     {
     }
 
-    public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
-    {
-        public ApplicationDbContext()
-            : base("DefaultConnection")
-        {
-        }
-    }
+    //public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
+    //{
+    //    public ApplicationDbContext()
+    //        : base("DefaultConnection")
+    //    {
+    //    }
+    //}
 }

@@ -12,12 +12,19 @@ namespace NHibernate.AspNet.Identity
     {
         private bool _disposed;
 
+        /// <summary>
+        /// If true then disposing this object will also dispose (close) the session. False means that external code is responsible for disposing the session.
+        /// </summary>
+        public bool ShouldDisposeSession { get; set; }
+
         public ISession Context { get; private set; }
 
         public RoleStore(ISession context)
         {
             if (context == null)
                 throw new ArgumentNullException("context");
+
+            ShouldDisposeSession = true;
             this.Context = context;
         }
 
@@ -69,7 +76,7 @@ namespace NHibernate.AspNet.Identity
 
         protected virtual void Dispose(bool disposing)
         {
-            if (disposing && !this._disposed)
+            if (disposing && !this._disposed && ShouldDisposeSession)
                 this.Context.Dispose();
             this._disposed = true;
             this.Context = (ISession)null;

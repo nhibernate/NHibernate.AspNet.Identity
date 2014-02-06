@@ -47,12 +47,23 @@ namespace NHibernate.AspNet.Identity
             this.ThrowIfDisposed();
             if ((object)user == null)
                 throw new ArgumentNullException("user");
-            await Task.FromResult(Context.Save(user));
+            using (var transaction = new TransactionScope(TransactionScopeOption.Required))
+            {
+                await Task.FromResult(Context.Save(user));
+                transaction.Complete();
+            }
         }
 
-        public virtual Task DeleteAsync(TUser user)
+        public virtual async Task DeleteAsync(TUser user)
         {
-            throw new NotSupportedException();
+            if ((object)user == null)
+                throw new ArgumentNullException("user");
+            using (var transaction = new TransactionScope(TransactionScopeOption.Required))
+            {
+                Context.Delete(user);
+                transaction.Complete();
+                await Task.FromResult(0);
+            }
         }
 
         public virtual async Task UpdateAsync(TUser user)
@@ -60,8 +71,12 @@ namespace NHibernate.AspNet.Identity
             this.ThrowIfDisposed();
             if ((object)user == null)
                 throw new ArgumentNullException("user");
-            Context.Update(user);
-            int num = await Task.FromResult(0);
+            using (var transaction = new TransactionScope(TransactionScopeOption.Required))
+            {
+                Context.Update(user);
+                transaction.Complete();
+                int num = await Task.FromResult(0);
+            }
         }
 
         private void ThrowIfDisposed()
@@ -90,14 +105,14 @@ namespace NHibernate.AspNet.Identity
             if (login == null)
                 throw new ArgumentNullException("login");
 
-            var query = from u in this.Context.Query<IdentityUser>()
+            var query = from u in this.Context.Query<TUser>()
                         from l in u.Logins
                         where l.LoginProvider == login.LoginProvider && l.ProviderKey == login.ProviderKey
                         select u;
 
-            IdentityUser entity = await Task.FromResult(query.SingleOrDefault());
+            TUser entity = await Task.FromResult(query.SingleOrDefault());
 
-            return entity as TUser;
+            return entity;
         }
 
         public virtual Task AddLoginAsync(TUser user, UserLoginInfo login)
@@ -130,15 +145,16 @@ namespace NHibernate.AspNet.Identity
             if (login == null)
                 throw new ArgumentNullException("login");
 
-            var info = user.Logins.SingleOrDefault(x => x.LoginProvider == login.LoginProvider && x.ProviderKey == login.ProviderKey);
-            if (info != null)
+            using (var transaction = new TransactionScope(TransactionScopeOption.Required))
             {
-                using (var transaction = new TransactionScope(TransactionScopeOption.Required))
+                var info =user.Logins.SingleOrDefault(x => x.LoginProvider == login.LoginProvider && x.ProviderKey == login.ProviderKey);
+                if (info != null)
                 {
                     user.Logins.Remove(info);
                     this.Context.Update(user);
-                    transaction.Complete();
+                    
                 }
+                transaction.Complete();
             }
             return (Task)Task.FromResult<int>(0);
         }
@@ -177,12 +193,18 @@ namespace NHibernate.AspNet.Identity
             if (claim == null)
                 throw new ArgumentNullException("claim");
 
-            user.Claims.Add(new IdentityUserClaim()
+            using (var transaction = new TransactionScope(TransactionScopeOption.Required))
             {
-                User = (IdentityUser)user,
-                ClaimType = claim.Type,
-                ClaimValue = claim.Value
-            });
+                user.Claims.Add(new IdentityUserClaim()
+                {
+                    User = (IdentityUser)user,
+                    ClaimType = claim.Type,
+                    ClaimValue = claim.Value
+                });
+                transaction.Complete();
+            }
+
+            
 
             return (Task)Task.FromResult<int>(0);
         }
@@ -195,18 +217,22 @@ namespace NHibernate.AspNet.Identity
             if (claim == null)
                 throw new ArgumentNullException("claim");
 
-            foreach (IdentityUserClaim identityUserClaim in Enumerable.ToList<IdentityUserClaim>(Enumerable.Where<IdentityUserClaim>((IEnumerable<IdentityUserClaim>)user.Claims, (Func<IdentityUserClaim, bool>)(uc =>
+            using (var transaction = new TransactionScope(TransactionScopeOption.Required))
             {
-                if (uc.ClaimValue == claim.Value)
-                    return uc.ClaimType == claim.Type;
-                else
-                    return false;
-            }))))
-            {
-                user.Claims.Remove(identityUserClaim);
-                this.Context.Delete(identityUserClaim);
+                foreach (IdentityUserClaim identityUserClaim in Enumerable.ToList<IdentityUserClaim>(Enumerable.Where<IdentityUserClaim>((IEnumerable<IdentityUserClaim>)user.Claims, (Func<IdentityUserClaim, bool>)(uc =>
+                {
+                    if (uc.ClaimValue == claim.Value)
+                        return uc.ClaimType == claim.Type;
+                    else
+                        return false;
+                }))))
+                {
+                    user.Claims.Remove(identityUserClaim);
+                    this.Context.Delete(identityUserClaim);
+                }
+                transaction.Complete();
             }
-
+            
             return (Task)Task.FromResult<int>(0);
         }
 
@@ -218,14 +244,15 @@ namespace NHibernate.AspNet.Identity
             if (string.IsNullOrWhiteSpace(role))
                 throw new ArgumentException(Resources.ValueCannotBeNullOrEmpty, "role");
 
-            IdentityRole identityRole = Queryable.SingleOrDefault<IdentityRole>((IQueryable<IdentityRole>)this.Context.Query<IdentityRole>(), (Expression<Func<IdentityRole, bool>>)(r => r.Name.ToUpper() == role.ToUpper()));
-            if (identityRole == null)
+            using (var transaction = new TransactionScope(TransactionScopeOption.Required))
             {
-                throw new InvalidOperationException(string.Format((IFormatProvider)CultureInfo.CurrentCulture, Resources.RoleNotFound, new object[1] { (object)role }));
-            }
-            else
-            {
+                IdentityRole identityRole = Queryable.SingleOrDefault<IdentityRole>((IQueryable<IdentityRole>)this.Context.Query<IdentityRole>(), (Expression<Func<IdentityRole, bool>>)(r => r.Name.ToUpper() == role.ToUpper()));
+                if (identityRole == null)
+                {
+                    throw new InvalidOperationException(string.Format((IFormatProvider)CultureInfo.CurrentCulture, Resources.RoleNotFound, new object[1] { (object)role }));
+                }
                 user.Roles.Add(identityRole);
+                transaction.Complete();
                 return (Task)Task.FromResult<int>(0);
             }
         }
@@ -238,14 +265,17 @@ namespace NHibernate.AspNet.Identity
             if (string.IsNullOrWhiteSpace(role))
                 throw new ArgumentException(Resources.ValueCannotBeNullOrEmpty, "role");
 
-            IdentityRole identityUserRole = Enumerable.FirstOrDefault<IdentityRole>(Enumerable.Where<IdentityRole>((IEnumerable<IdentityRole>)user.Roles, (Func<IdentityRole, bool>)(r => r.Name.ToUpper() == role.ToUpper())));
-            if (identityUserRole != null)
+            using (var transaction = new TransactionScope(TransactionScopeOption.Required))
             {
-                user.Roles.Remove(identityUserRole);
-                this.Context.Delete(identityUserRole);
+                IdentityRole identityUserRole = Enumerable.FirstOrDefault<IdentityRole>(Enumerable.Where<IdentityRole>((IEnumerable<IdentityRole>)user.Roles, (Func<IdentityRole, bool>)(r => r.Name.ToUpper() == role.ToUpper())));
+                if (identityUserRole != null)
+                {
+                    user.Roles.Remove(identityUserRole);
+                    this.Context.Delete(identityUserRole);
+                }
+                transaction.Complete();
+                return (Task)Task.FromResult<int>(0);
             }
-
-            return (Task)Task.FromResult<int>(0);
         }
 
         public virtual Task<IList<string>> GetRolesAsync(TUser user)
@@ -268,7 +298,7 @@ namespace NHibernate.AspNet.Identity
                 return Task.FromResult<bool>(Enumerable.Any<IdentityRole>((IEnumerable<IdentityRole>)user.Roles, (Func<IdentityRole, bool>)(r => r.Name.ToUpper() == role.ToUpper())));
         }
 
-        public Task SetPasswordHashAsync(TUser user, string passwordHash)
+        public virtual Task SetPasswordHashAsync(TUser user, string passwordHash)
         {
             this.ThrowIfDisposed();
             if ((object)user == null)
@@ -277,7 +307,7 @@ namespace NHibernate.AspNet.Identity
             return (Task)Task.FromResult<int>(0);
         }
 
-        public Task<string> GetPasswordHashAsync(TUser user)
+        public virtual Task<string> GetPasswordHashAsync(TUser user)
         {
             this.ThrowIfDisposed();
             if ((object)user == null)
@@ -286,7 +316,7 @@ namespace NHibernate.AspNet.Identity
                 return Task.FromResult<string>(user.PasswordHash);
         }
 
-        public Task SetSecurityStampAsync(TUser user, string stamp)
+        public virtual Task SetSecurityStampAsync(TUser user, string stamp)
         {
             this.ThrowIfDisposed();
             if ((object)user == null)
@@ -295,7 +325,7 @@ namespace NHibernate.AspNet.Identity
             return (Task)Task.FromResult<int>(0);
         }
 
-        public Task<string> GetSecurityStampAsync(TUser user)
+        public virtual Task<string> GetSecurityStampAsync(TUser user)
         {
             this.ThrowIfDisposed();
             if ((object)user == null)
@@ -304,7 +334,7 @@ namespace NHibernate.AspNet.Identity
                 return Task.FromResult<string>(user.SecurityStamp);
         }
 
-        public Task<bool> HasPasswordAsync(TUser user)
+        public virtual Task<bool> HasPasswordAsync(TUser user)
         {
             return Task.FromResult<bool>(user.PasswordHash != null);
         }

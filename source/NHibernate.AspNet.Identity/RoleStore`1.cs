@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNet.Identity;
+﻿using System.Collections.Generic;
+using System.Transactions;
+using Microsoft.AspNet.Identity;
 using NHibernate;
 using NHibernate.Linq;
 using System;
@@ -58,8 +60,12 @@ namespace NHibernate.AspNet.Identity
             this.ThrowIfDisposed();
             if ((object)role == null)
                 throw new ArgumentNullException("role");
-            Context.Update(role);
-            int num = await Task.FromResult(0);
+            using (var transaction = new TransactionScope(TransactionScopeOption.Required))
+            {
+                Context.Update(role);
+                transaction.Complete();
+                int num = await Task.FromResult(0);
+            }
         }
 
         private void ThrowIfDisposed()

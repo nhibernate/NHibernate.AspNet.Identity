@@ -1,8 +1,8 @@
-﻿using Microsoft.AspNet.Identity;
+﻿using System.Collections.Generic;
+using Microsoft.AspNet.Identity;
+using NHibernate.AspNet.Identity.DomainModel;
 using NHibernate.Mapping.ByCode;
 using NHibernate.Mapping.ByCode.Conformist;
-using NHibernate.AspNet.Identity.DomainModel;
-using System.Collections.Generic;
 
 namespace NHibernate.AspNet.Identity
 {

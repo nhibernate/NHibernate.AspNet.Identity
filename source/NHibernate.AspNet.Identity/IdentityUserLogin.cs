@@ -1,5 +1,4 @@
-﻿using NHibernate.Mapping.ByCode.Conformist;
-using NHibernate.AspNet.Identity.DomainModel;
+﻿using NHibernate.AspNet.Identity.DomainModel;
 
 namespace NHibernate.AspNet.Identity
 {

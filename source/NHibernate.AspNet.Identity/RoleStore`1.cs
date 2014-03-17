@@ -1,12 +1,10 @@
-﻿using System.Collections.Generic;
-using System.Transactions;
-using Microsoft.AspNet.Identity;
-using NHibernate;
-using NHibernate.Linq;
-using System;
+﻿using System;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using System.Transactions;
+using Microsoft.AspNet.Identity;
+using NHibernate.Linq;
 
 namespace NHibernate.AspNet.Identity
 {

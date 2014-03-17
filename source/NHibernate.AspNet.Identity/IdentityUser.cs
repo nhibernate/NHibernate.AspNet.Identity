@@ -1,9 +1,8 @@
-﻿using Microsoft.AspNet.Identity;
+﻿using System.Collections.Generic;
+using Microsoft.AspNet.Identity;
+using NHibernate.AspNet.Identity.DomainModel;
 using NHibernate.Mapping.ByCode;
 using NHibernate.Mapping.ByCode.Conformist;
-using NHibernate.AspNet.Identity.DomainModel;
-using System;
-using System.Collections.Generic;
 
 namespace NHibernate.AspNet.Identity
 {
@@ -62,11 +61,8 @@ namespace NHibernate.AspNet.Identity
                 });
             });
 
-            //Bag(x => x.Logins, map => { map.Key(k => k.Column("UserId")); map.Cascade(Cascade.All); }, rel => { rel.OneToMany(); });
-
             Bag(x => x.Roles, map => {
                 map.Table("AspNetUserRoles");
-                map.Cascade(Cascade.All);
                 map.Key(k => k.Column("UserId"));
             }, rel => rel.ManyToMany(p => p.Column("RoleId")));
         }

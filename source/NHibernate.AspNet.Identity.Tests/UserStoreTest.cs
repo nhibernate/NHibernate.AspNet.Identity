@@ -88,5 +88,28 @@ namespace NHibernate.AspNet.Identity.Tests
             Assert.IsNotNull(actual);
             Assert.AreEqual(user.UserName, actual.UserName);
         }
+
+        [TestMethod]
+        public void GivenHaveRoles_WhenDeleteUser_ThenDeletingCausesNoCascade()
+        {
+            var user = new IdentityUser("Lukz 04");
+            var role = new IdentityRole("ADM");
+            var store = new UserStore<IdentityUser>(_session);
+            var roleStore = new RoleStore<IdentityRole>(_session);
+
+            roleStore.CreateAsync(role);
+            store.CreateAsync(user);
+            store.AddToRoleAsync(user, "ADM");
+
+            Assert.IsTrue(_session.Query<IdentityRole>().Any(x => x.Name == "ADM"));
+            Assert.IsTrue(_session.Query<IdentityUser>().Any(x => x.UserName == "Lukz 04"));
+
+            var result = store.DeleteAsync(user);
+
+            Assert.IsNull(result.Exception);
+            Assert.IsFalse(_session.Query<IdentityUser>().Any(x => x.UserName == "Lukz 04"));
+            Assert.IsTrue(_session.Query<IdentityRole>().Any(x => x.Name == "ADM"));
+        }
+
     }
 }

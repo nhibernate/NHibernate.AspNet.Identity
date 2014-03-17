@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNet.Identity;
+﻿using System.Collections.Generic;
+using System.Transactions;
+using Microsoft.AspNet.Identity;
 using NHibernate;
 using NHibernate.Linq;
 using System;
@@ -12,12 +14,19 @@ namespace NHibernate.AspNet.Identity
     {
         private bool _disposed;
 
+        /// <summary>
+        /// If true then disposing this object will also dispose (close) the session. False means that external code is responsible for disposing the session.
+        /// </summary>
+        public bool ShouldDisposeSession { get; set; }
+
         public ISession Context { get; private set; }
 
         public RoleStore(ISession context)
         {
             if (context == null)
                 throw new ArgumentNullException("context");
+
+            ShouldDisposeSession = true;
             this.Context = context;
         }
 
@@ -51,8 +60,12 @@ namespace NHibernate.AspNet.Identity
             this.ThrowIfDisposed();
             if ((object)role == null)
                 throw new ArgumentNullException("role");
-            Context.Update(role);
-            int num = await Task.FromResult(0);
+            using (var transaction = new TransactionScope(TransactionScopeOption.Required))
+            {
+                Context.Update(role);
+                transaction.Complete();
+                int num = await Task.FromResult(0);
+            }
         }
 
         private void ThrowIfDisposed()
@@ -69,7 +82,7 @@ namespace NHibernate.AspNet.Identity
 
         protected virtual void Dispose(bool disposing)
         {
-            if (disposing && !this._disposed)
+            if (disposing && !this._disposed && ShouldDisposeSession)
                 this.Context.Dispose();
             this._disposed = true;
             this.Context = (ISession)null;

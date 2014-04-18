@@ -39,7 +39,8 @@ Install-Package NHibernate.AspNet.Identity
 	* Remove the ApplicationDbContext class completely.
 4. In ~/Controllers/AccountController.cs
     * Remove the namespace: Microsoft.AspNet.Identity.EntityFramework
-    * Add the connection string name to the constructor of the UserStore. Or empty constructor will use DefaultConnection
+    * Add the relevant ISession implementation that will be used by default.  This could be from a DI implementation.
+	Note: This isn't mandatory, if you are using a framework that will inject the dependency, you shouldn't need the parameterless constructor.
 
 ```C#
     var mapper = new ModelMapper();

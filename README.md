@@ -41,18 +41,19 @@ Install-Package NHibernate.AspNet.Identity
     * Remove the namespace: Microsoft.AspNet.Identity.EntityFramework
     * Add the connection string name to the constructor of the UserStore. Or empty constructor will use DefaultConnection
 
+5. Setup configuration code
+
+NHibernate
 ```C#
-    var mapper = new ModelMapper();
-    mapper.AddMapping<IdentityUserMap>();
-    mapper.AddMapping<IdentityRoleMap>();
-    mapper.AddMapping<IdentityUserClaimMap>();
-    mapper.AddMapping<IdentityUserLoginMap>();
 
-    var mapping = mapper.CompileMappingForAllExplicitlyAddedEntities();
-
+	// this assumes you are using the default Identity model of "ApplicationUser"
+	var myEntities = new [] {
+		typeof(ApplicationUser)
+	};
+	
     var configuration = new Configuration();
     configuration.Configure("sqlite-nhibernate-config.xml");
-    configuration.AddDeserializedMapping(mapping, null);
+    configuration.AddDeserializedMapping(MappingHelper.GetIdentityMappings(myEntities), null);
 
     var factory = configuration.BuildSessionFactory();
     var session = factory.OpenSession();
@@ -60,6 +61,28 @@ Install-Package NHibernate.AspNet.Identity
     var userManager = new UserManager<ApplicationUser>(
         new UserStore<ApplicationUser>(session);
 ```
+
+FluentNHibernate
+```C#
+	// this assumes you are using the default Identity model of "ApplicationUser"
+	var myEntities = new [] {
+		typeof(ApplicationUser)
+	};
+	
+	var configuration = Fluently.Configure()
+	   .Database(/*.....*/)
+	   .ExposeConfiguration(cfg => {
+	       cfg.AddDeserializedMapping(MappingHelper.GetIdentityMappings(myEntities), null);
+		});
+	
+    var factory = configuration.BuildSessionFactory();
+    var session = factory.OpenSession();
+
+    var userManager = new UserManager<ApplicationUser>(
+        new UserStore<ApplicationUser>(session);
+
+```
+
 
 ## Thanks To ##
 

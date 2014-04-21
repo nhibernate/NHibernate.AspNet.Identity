@@ -2,12 +2,14 @@
 using System.IO;
 using System.Linq;
 using NHibernate.AspNet.Identity;
+using NHibernate.AspNet.Identity.Helpers;
 using NHibernate.AspNet.Web.Models;
 using NHibernate.Cfg;
 using NHibernate.Mapping.ByCode;
 using NHibernate.Tool.hbm2ddl;
 using SharpArch.Domain.DomainModel;
 using SharpArch.NHibernate;
+using System.Collections.Generic;
 
 namespace NHibernate.AspNet.Web
 {
@@ -15,28 +17,11 @@ namespace NHibernate.AspNet.Web
     {
         public static void Configure(ISessionStorage storage)
         {
-            var baseEntityToIgnore = new[] { 
-                typeof(NHibernate.AspNet.Identity.DomainModel.EntityWithTypedId<int>), 
-                typeof(NHibernate.AspNet.Identity.DomainModel.EntityWithTypedId<string>), 
+            var internalTypes = new[] {
+                typeof(ApplicationUser)
             };
 
-            var allEntities = new[] { 
-                typeof(IdentityUser), 
-                typeof(ApplicationUser), 
-                typeof(IdentityRole), 
-                typeof(IdentityUserLogin), 
-                typeof(IdentityUserClaim), 
-            };
-
-            var mapper = new ConventionModelMapper();
-            DefineBaseClass(mapper, baseEntityToIgnore);
-            mapper.IsComponent((type, declared) => typeof(NHibernate.AspNet.Identity.DomainModel.ValueObject).IsAssignableFrom(type));
-
-            mapper.AddMapping<IdentityUserMap>();
-            mapper.AddMapping<IdentityRoleMap>();
-            mapper.AddMapping<IdentityUserClaimMap>();
-
-            var mapping = mapper.CompileMappingFor(allEntities);
+            var mapping = MappingHelper.GetIdentityMappings(internalTypes);
             System.Diagnostics.Debug.WriteLine(mapping.AsString());
 
             var configuration = NHibernateSession.Init(storage, mapping);

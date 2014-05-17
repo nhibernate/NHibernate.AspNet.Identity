@@ -3,6 +3,10 @@ NHibernate.AspNet.Identity
 
 ASP.NET Identity provider that users NHibernate for storage
 
+## About this ##
+
+[![About this](http://milesibastos.github.io/NHibernate.AspNet.Identity/images/about.png)](http://youtu.be/pb4QgjXkT7E)
+
 ## Purpose ##
 
 ASP.NET MVC 5 shipped with a new Identity system (in the Microsoft.AspNet.Identity.Core package) in order to support both local login and remote logins via OpenID/OAuth, but only ships with an
@@ -21,7 +25,7 @@ Entity Framework provider (Microsoft.AspNet.Identity.EntityFramework).
     * IUserPasswordStore<TUser>
     * IUserSecurityStampStore<TUser>
 
-## Instructions ##
+## Quick-start guide ##
 These instructions assume you know how to set up NHibernate within an MVC application.
 
 1. Create a new ASP.NET MVC 5 project, choosing the Individual User Accounts authentication type.

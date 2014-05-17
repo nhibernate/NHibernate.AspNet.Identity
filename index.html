@@ -1,0 +1,153 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Nhibernate.aspnet.identity by milesibastos</title>
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script src="javascripts/respond.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <!--[if lt IE 8]>
+    <link rel="stylesheet" href="stylesheets/ie.css">
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+  </head>
+  <body>
+      <div id="header">
+        <nav>
+          <li class="fork"><a href="https://github.com/milesibastos/NHibernate.AspNet.Identity">View On GitHub</a></li>
+          <li class="downloads"><a href="https://github.com/milesibastos/NHibernate.AspNet.Identity/zipball/master">ZIP</a></li>
+          <li class="downloads"><a href="https://github.com/milesibastos/NHibernate.AspNet.Identity/tarball/master">TAR</a></li>
+          <li class="title">DOWNLOADS</li>
+        </nav>
+      </div><!-- end header -->
+
+    <div class="wrapper">
+
+      <section>
+        <div id="title">
+          <h1>Nhibernate.aspnet.identity</h1>
+          <p>ASP.NET Identity providers that use NHibernate</p>
+          <hr>
+          <span class="credits left">Project maintained by <a href="https://github.com/milesibastos">milesibastos</a></span>
+          <span class="credits right">Hosted on GitHub Pages &mdash; Theme by <a href="https://twitter.com/michigangraham">mattgraham</a></span>
+        </div>
+
+        <h1>
+<a name="nhibernateaspnetidentity" class="anchor" href="#nhibernateaspnetidentity"><span class="octicon octicon-link"></span></a>NHibernate.AspNet.Identity</h1>
+
+<p>ASP.NET Identity provider that users NHibernate for storage</p>
+
+<h2>
+<a name="purpose" class="anchor" href="#purpose"><span class="octicon octicon-link"></span></a>Purpose</h2>
+
+<p>ASP.NET MVC 5 shipped with a new Identity system (in the Microsoft.AspNet.Identity.Core package) in order to support both local login and remote logins via OpenID/OAuth, but only ships with an
+Entity Framework provider (Microsoft.AspNet.Identity.EntityFramework).</p>
+
+<h2>
+<a name="features" class="anchor" href="#features"><span class="octicon octicon-link"></span></a>Features</h2>
+
+<ul>
+<li>Drop-in replacement ASP.NET Identity with NHibernate as the backing store.</li>
+<li>Based on same schema requirede by EntityFramework for compatibility model</li>
+<li>Contains the same IdentityUser class used by the EntityFramework provider in the MVC 5 project template.</li>
+<li>Supports additional profile properties on your application's user model.</li>
+<li>Provides UserStore implementation that implements the same interfaces as the EntityFramework version:
+
+<ul>
+<li>IUserStore</li>
+<li>IUserLoginStore</li>
+<li>IUserRoleStore</li>
+<li>IUserClaimStore</li>
+<li>IUserPasswordStore</li>
+<li>IUserSecurityStampStore</li>
+</ul>
+</li>
+</ul><h2>
+<a name="instructions" class="anchor" href="#instructions"><span class="octicon octicon-link"></span></a>Instructions</h2>
+
+<p>These instructions assume you know how to set up NHibernate within an MVC application.</p>
+
+<ol>
+<li>Create a new ASP.NET MVC 5 project, choosing the Individual User Accounts authentication type.</li>
+<li>Remove the Entity Framework packages and replace with NHibernate Identity:</li>
+</ol><div class="highlight highlight-PowerShell"><pre><span class="n">Uninstall-Package</span> <span class="n">Microsoft</span><span class="p">.</span><span class="n">AspNet</span><span class="p">.</span><span class="n">Identity</span><span class="p">.</span><span class="n">EntityFramework</span>
+<span class="n">Uninstall-Package</span> <span class="n">EntityFramework</span>
+<span class="n">Install-Package</span> <span class="n">NHibernate</span><span class="p">.</span><span class="n">AspNet</span><span class="p">.</span><span class="n">Identity</span>
+</pre></div>
+
+<ol>
+<li>In ~/Models/IdentityModels.cs:
+
+<ul>
+<li>Remove the namespace: Microsoft.AspNet.Identity.EntityFramework</li>
+<li>Add the namespace: NHibernate.AspNet.Identity</li>
+<li>Remove the ApplicationDbContext class completely.</li>
+</ul>
+</li>
+<li>
+<p>In ~/Controllers/AccountController.cs</p>
+
+<ul>
+<li>Remove the namespace: Microsoft.AspNet.Identity.EntityFramework</li>
+<li>Add the relevant ISession implementation that will be used by default.  This could be from a DI implementation.
+Note: This isn't mandatory, if you are using a framework that will inject the dependency, you shouldn't need the parameterless constructor.</li>
+</ul>
+</li>
+<li><p>Setup configuration code</p></li>
+</ol><p>NHibernate</p>
+
+<div class="highlight highlight-C#"><pre>
+    <span class="c1">// this assumes you are using the default Identity model of "ApplicationUser"</span>
+    <span class="kt">var</span> <span class="n">myEntities</span> <span class="p">=</span> <span class="k">new</span> <span class="p">[]</span> <span class="p">{</span>
+        <span class="k">typeof</span><span class="p">(</span><span class="n">ApplicationUser</span><span class="p">)</span>
+    <span class="p">};</span>
+
+    <span class="kt">var</span> <span class="n">configuration</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Configuration</span><span class="p">();</span>
+    <span class="n">configuration</span><span class="p">.</span><span class="n">Configure</span><span class="p">(</span><span class="s">"sqlite-nhibernate-config.xml"</span><span class="p">);</span>
+    <span class="n">configuration</span><span class="p">.</span><span class="n">AddDeserializedMapping</span><span class="p">(</span><span class="n">MappingHelper</span><span class="p">.</span><span class="n">GetIdentityMappings</span><span class="p">(</span><span class="n">myEntities</span><span class="p">),</span> <span class="k">null</span><span class="p">);</span>
+
+    <span class="kt">var</span> <span class="n">factory</span> <span class="p">=</span> <span class="n">configuration</span><span class="p">.</span><span class="n">BuildSessionFactory</span><span class="p">();</span>
+    <span class="kt">var</span> <span class="n">session</span> <span class="p">=</span> <span class="n">factory</span><span class="p">.</span><span class="n">OpenSession</span><span class="p">();</span>
+
+    <span class="kt">var</span> <span class="n">userManager</span> <span class="p">=</span> <span class="k">new</span> <span class="n">UserManager</span><span class="p">&lt;</span><span class="n">ApplicationUser</span><span class="p">&gt;(</span>
+        <span class="k">new</span> <span class="n">UserStore</span><span class="p">&lt;</span><span class="n">ApplicationUser</span><span class="p">&gt;(</span><span class="n">session</span><span class="p">);</span>
+</pre></div>
+
+<p>FluentNHibernate</p>
+
+<div class="highlight highlight-C#"><pre>    <span class="c1">// this assumes you are using the default Identity model of "ApplicationUser"</span>
+    <span class="kt">var</span> <span class="n">myEntities</span> <span class="p">=</span> <span class="k">new</span> <span class="p">[]</span> <span class="p">{</span>
+        <span class="k">typeof</span><span class="p">(</span><span class="n">ApplicationUser</span><span class="p">)</span>
+    <span class="p">};</span>
+
+    <span class="kt">var</span> <span class="n">configuration</span> <span class="p">=</span> <span class="n">Fluently</span><span class="p">.</span><span class="n">Configure</span><span class="p">()</span>
+       <span class="p">.</span><span class="n">Database</span><span class="p">(</span><span class="cm">/*.....*/</span><span class="p">)</span>
+       <span class="p">.</span><span class="n">ExposeConfiguration</span><span class="p">(</span><span class="n">cfg</span> <span class="p">=&gt;</span> <span class="p">{</span>
+           <span class="n">cfg</span><span class="p">.</span><span class="n">AddDeserializedMapping</span><span class="p">(</span><span class="n">MappingHelper</span><span class="p">.</span><span class="n">GetIdentityMappings</span><span class="p">(</span><span class="n">myEntities</span><span class="p">),</span> <span class="k">null</span><span class="p">);</span>
+        <span class="p">});</span>
+
+    <span class="kt">var</span> <span class="n">factory</span> <span class="p">=</span> <span class="n">configuration</span><span class="p">.</span><span class="n">BuildSessionFactory</span><span class="p">();</span>
+    <span class="kt">var</span> <span class="n">session</span> <span class="p">=</span> <span class="n">factory</span><span class="p">.</span><span class="n">OpenSession</span><span class="p">();</span>
+
+    <span class="kt">var</span> <span class="n">userManager</span> <span class="p">=</span> <span class="k">new</span> <span class="n">UserManager</span><span class="p">&lt;</span><span class="n">ApplicationUser</span><span class="p">&gt;(</span>
+        <span class="k">new</span> <span class="n">UserStore</span><span class="p">&lt;</span><span class="n">ApplicationUser</span><span class="p">&gt;(</span><span class="n">session</span><span class="p">);</span>
+
+</pre></div>
+
+<h2>
+<a name="thanks-to" class="anchor" href="#thanks-to"><span class="octicon octicon-link"></span></a>Thanks To</h2>
+
+<p>Special thanks to <a href="https://github.com/DavidBoike">David Boike</a> whos <a href="https://github.com/ILMServices/RavenDB.AspNet.Identity">RavenDB AspNet Identity</a> project gave me the base for jumpstarting the NHibernate provider</p>
+      </section>
+
+    </div>
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+    
+  </body>
+</html>

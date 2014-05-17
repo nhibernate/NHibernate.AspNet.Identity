@@ -39,7 +39,7 @@ namespace NHibernate.AspNet.Web.Specs
 
             config.InterceptEmailMessagesOnPort(13565);
 
-            config.AuthenticateBeforeEachTestUsing<StandardAuthenticator>();
+            //config.AuthenticateBeforeEachTestUsing<StandardAuthenticator>();
 
             _host = new SpecsForIntegrationHost(config);
             _host.Start();

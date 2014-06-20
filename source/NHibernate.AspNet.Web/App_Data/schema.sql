@@ -11,6 +11,8 @@
 
     drop table if exists AspNetUserClaims
 
+    drop table if exists ApplicationUser
+
     PRAGMA foreign_keys = ON
 
     create table AspNetUsers (
@@ -45,6 +47,12 @@
         Id  integer primary key autoincrement,
        ClaimType TEXT,
        ClaimValue TEXT,
-       User_Id TEXT,
-       constraint FKF4F7D992B13A912B foreign key (User_Id) references AspNetUsers
+       UserId TEXT,
+       constraint FKF4F7D992EA778823 foreign key (UserId) references AspNetUsers
+    )
+
+    create table ApplicationUser (
+        applicationuser_key TEXT not null,
+       primary key (applicationuser_key),
+       constraint FK4376B148E75DF37 foreign key (applicationuser_key) references AspNetUsers
     )

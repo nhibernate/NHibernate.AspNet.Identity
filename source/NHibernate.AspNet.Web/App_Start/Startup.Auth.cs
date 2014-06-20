@@ -1,6 +1,9 @@
-﻿using Microsoft.AspNet.Identity;
+﻿using System.Diagnostics;
+using System.Security.Claims;
+using Microsoft.AspNet.Identity;
 using Microsoft.Owin;
 using Microsoft.Owin.Security.Cookies;
+using Microsoft.Owin.Security.Google;
 using Owin;
 
 namespace NHibernate.AspNet.Web
@@ -32,7 +35,7 @@ namespace NHibernate.AspNet.Web
             //   appId: "",
             //   appSecret: "");
 
-            //app.UseGoogleAuthentication();
+            app.UseGoogleAuthentication();
         }
     }
 }

@@ -22,7 +22,7 @@ namespace NHibernate.AspNet.Identity
             Property(x => x.ClaimType);
             Property(x => x.ClaimValue);
 
-            ManyToOne(x => x.User, m => m.Column("User_Id"));
+            ManyToOne(x => x.User, m => m.Column("UserId"));
         }
     }
 

@@ -210,8 +210,6 @@ namespace NHibernate.AspNet.Identity
                 transaction.Complete();
             }
 
-            
-
             return (Task)Task.FromResult<int>(0);
         }
 

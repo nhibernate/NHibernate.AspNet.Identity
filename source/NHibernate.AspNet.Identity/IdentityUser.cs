@@ -45,7 +45,7 @@ namespace NHibernate.AspNet.Identity
             Property(x => x.PasswordHash);
             Property(x => x.SecurityStamp);
 
-            Bag(x => x.Claims, map => { map.Key(k => k.Column("User_Id")); }, rel => { rel.OneToMany(); });
+            Bag(x => x.Claims, map => { map.Key(k => k.Column("UserId")); }, rel => { rel.OneToMany(); });
 
             Set(x => x.Logins, cam =>
             {

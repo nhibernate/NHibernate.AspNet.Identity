@@ -175,11 +175,8 @@
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <PropertyGroup>
     <PostBuildEvent>
-xcopy /D /Y "$(SolutionDir).nuget\..\..\packages\SpecsFor.Mvc.3.0.1\tools\IEDriverServer.exe" "$(TargetDir)"
-xcopy /D /Y "$(SolutionDir).nuget\..\..\packages\SpecsFor.Mvc.3.0.1\tools\ChromeDriver.exe" "$(TargetDir)"
-
-xcopy /D /Y "A:\projects\github\NHibernate.AspNet.Identity\packages\SpecsFor.Mvc.3.1.0\tools\IEDriverServer.exe" "$(TargetDir)"
-xcopy /D /Y "A:\projects\github\NHibernate.AspNet.Identity\packages\SpecsFor.Mvc.3.1.0\tools\ChromeDriver.exe" "$(TargetDir)"
+xcopy /D /Y "$(SolutionDir)..\packages\SpecsFor.Mvc.3.1.0\tools\IEDriverServer.exe" "$(TargetDir)"
+xcopy /D /Y "$(SolutionDir)..\packages\SpecsFor.Mvc.3.1.0\tools\ChromeDriver.exe" "$(TargetDir)"
 </PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

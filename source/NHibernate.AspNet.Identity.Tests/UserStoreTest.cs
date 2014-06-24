@@ -111,5 +111,35 @@ namespace NHibernate.AspNet.Identity.Tests
             Assert.IsTrue(_session.Query<IdentityRole>().Any(x => x.Name == "ADM"));
         }
 
+        [TestMethod]
+        public void GetAllUsers()
+        {
+            var user1 = new IdentityUser("Lukz 04");
+            var user2 = new IdentityUser("Moa 01");
+            var user3 = new IdentityUser("Win 02");
+            var user4 = new IdentityUser("Andre 03");
+            var role = new IdentityRole("ADM");
+            var store = new UserStore<IdentityUser>(_session);
+            var roleStore = new RoleStore<IdentityRole>(_session);
+
+            roleStore.CreateAsync(role);
+            store.CreateAsync(user1);
+            store.CreateAsync(user2);
+            store.CreateAsync(user3);
+            store.CreateAsync(user4);
+            store.AddToRoleAsync(user1, "ADM");
+            store.AddToRoleAsync(user2, "ADM");
+            store.AddToRoleAsync(user3, "ADM");
+            store.AddToRoleAsync(user4, "ADM");
+
+            Assert.IsTrue(_session.Query<IdentityRole>().Any(x => x.Name == "ADM"));
+            Assert.IsTrue(_session.Query<IdentityUser>().Any(x => x.UserName == "Lukz 04"));
+
+            Assert.IsTrue(_session.Query<IdentityUser>().Any(x => x.UserName == "Andre 03"));
+
+            var resul = store.Users;
+
+            Assert.AreEqual(4, resul.Count());
+        }
     }
 }

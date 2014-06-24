@@ -16,7 +16,7 @@ namespace NHibernate.AspNet.Identity
     /// Implements IUserStore using NHibernate where TUser is the entity type of the user being stored
     /// </summary>
     /// <typeparam name="TUser"/>
-    public class UserStore<TUser> : IUserLoginStore<TUser>, IUserClaimStore<TUser>, IUserRoleStore<TUser>, IUserPasswordStore<TUser>, IUserSecurityStampStore<TUser>, IUserStore<TUser>, IDisposable where TUser : IdentityUser
+    public class UserStore<TUser> : IUserLoginStore<TUser>, IUserClaimStore<TUser>, IUserRoleStore<TUser>, IUserPasswordStore<TUser>, IUserSecurityStampStore<TUser>, IQueryableUserStore<TUser>, IUserStore<TUser>, IDisposable where TUser : IdentityUser
     {
         private bool _disposed;
 
@@ -341,6 +341,16 @@ namespace NHibernate.AspNet.Identity
         public virtual Task<bool> HasPasswordAsync(TUser user)
         {
             return Task.FromResult<bool>(user.PasswordHash != null);
+        }
+
+        public IQueryable<TUser> Users
+        {
+            get
+            {
+                this.ThrowIfDisposed();
+                return Context.Query<TUser>();
+            }
+            private set { }
         }
     }
 }

@@ -8,7 +8,7 @@ using NHibernate.Linq;
 
 namespace NHibernate.AspNet.Identity
 {
-    public class RoleStore<TRole> : IRoleStore<TRole>, IDisposable where TRole : IdentityRole
+    public class RoleStore<TRole> : IQueryableRoleStore<TRole>, IRoleStore<TRole>, IDisposable where TRole : IdentityRole
     {
         private bool _disposed;
 
@@ -45,12 +45,27 @@ namespace NHibernate.AspNet.Identity
             this.ThrowIfDisposed();
             if ((object)role == null)
                 throw new ArgumentNullException("role");
-            await Task.FromResult(Context.Save(role));
+            using (var transaction = new TransactionScope(TransactionScopeOption.Required))
+            {
+                Context.Save(role);
+                transaction.Complete();
+                int num = await Task.FromResult(0);
+            }
         }
 
-        public virtual Task DeleteAsync(TRole role)
+        public virtual async Task DeleteAsync(TRole role)
         {
-            throw new NotSupportedException();
+            this.ThrowIfDisposed();
+            if (role == null)
+            {
+                throw new ArgumentNullException("role");
+            }
+            using (var transaction = new TransactionScope(TransactionScopeOption.Required))
+            {
+                Context.Delete(role);
+                transaction.Complete();
+                int num = await Task.FromResult(0);
+            }
         }
 
         public virtual async Task UpdateAsync(TRole role)
@@ -84,6 +99,15 @@ namespace NHibernate.AspNet.Identity
                 this.Context.Dispose();
             this._disposed = true;
             this.Context = (ISession)null;
+        }
+
+        public IQueryable<TRole> Roles
+        {
+            get
+            {
+                this.ThrowIfDisposed();
+                return this.Context.Query<TRole>();
+            }
         }
     }
 }

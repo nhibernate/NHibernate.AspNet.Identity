@@ -17,8 +17,16 @@
 
     create table AspNetUsers (
         Id TEXT not null,
-       UserName TEXT,
+       AccessFailedCount INT,
+       Email TEXT,
+       EmailConfirmed BOOL,
+       LockoutEnabled BOOL,
+       LockoutEndDateUtc DATETIME,
        PasswordHash TEXT,
+       PhoneNumber TEXT,
+       PhoneNumberConfirmed BOOL,
+       TwoFactorEnabled BOOL,
+       UserName TEXT,
        SecurityStamp TEXT,
        primary key (Id)
     )

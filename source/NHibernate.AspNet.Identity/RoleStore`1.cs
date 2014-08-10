@@ -45,7 +45,11 @@ namespace NHibernate.AspNet.Identity
             this.ThrowIfDisposed();
             if ((object)role == null)
                 throw new ArgumentNullException("role");
-            await Task.FromResult(Context.Save(role));
+            using (var transaction = new TransactionScope(TransactionScopeOption.Required))
+            {
+                await Task.FromResult(Context.Save(role));
+                transaction.Complete();
+            }
         }
 
         public virtual Task DeleteAsync(TRole role)

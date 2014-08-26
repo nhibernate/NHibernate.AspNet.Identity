@@ -199,11 +199,21 @@ namespace NHibernate.AspNet.Identity.Tests
         }
 
         [TestMethod]
+        public void FindByName()
+        {
+            var userManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(this._session));
+            userManager.Create(new ApplicationUser() { UserName = "test", Email = "aaa@bbb.com", EmailConfirmed = true }, "Welcome");
+            var x = userManager.FindByName("tEsT");
+            Assert.IsNotNull(x);
+            Assert.IsTrue(userManager.IsEmailConfirmed(x.Id));
+        }
+
+        [TestMethod]
         public void FindByEmail()
         {
             var userManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(this._session));
             userManager.Create(new ApplicationUser() { UserName = "test", Email = "aaa@bbb.com", EmailConfirmed = true }, "Welcome");
-            var x = userManager.FindByEmail("aaa@bbb.com");
+            var x = userManager.FindByEmail("AaA@bBb.com");
             Assert.IsNotNull(x);
             Assert.IsTrue(userManager.IsEmailConfirmed(x.Id));
         }

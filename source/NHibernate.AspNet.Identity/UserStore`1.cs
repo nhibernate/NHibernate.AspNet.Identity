@@ -326,7 +326,6 @@ namespace NHibernate.AspNet.Identity
                 if (identityUserRole != null)
                 {
                     user.Roles.Remove(identityUserRole);
-                    this.Context.Delete(identityUserRole);
                 }
                 transaction.Complete();
                 return (Task)Task.FromResult<int>(0);

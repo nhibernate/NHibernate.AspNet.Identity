@@ -17,8 +17,7 @@ namespace NHibernate.AspNet.Identity
             this.Users = (ICollection<IdentityUser>)new List<IdentityUser>();
         }
 
-        public IdentityRole(string roleName)
-            : this()
+        public IdentityRole(string roleName) : this()
         {
             this.Name = roleName;
         }
@@ -28,10 +27,16 @@ namespace NHibernate.AspNet.Identity
     {
         public IdentityRoleMap()
         {
-            Table("AspNetRoles");
-            Id(x => x.Id, m => m.Generator(new UUIDHexCombGeneratorDef("D")));
-            Property(x => x.Name, m => m.NotNullable(false));
-            Bag(x => x.Users, map => {
+            this.Table("AspNetRoles");
+            this.Id(x => x.Id, m => m.Generator(new UUIDHexCombGeneratorDef("D")));
+            this.Property(x => x.Name, map =>
+            {
+                map.Length(256);
+                map.NotNullable(true);
+                map.Unique(true);
+            });
+            this.Bag(x => x.Users, map =>
+            {
                 map.Table("AspNetUserRoles");
                 map.Cascade(Cascade.None);
                 map.Key(k => k.Column("RoleId"));

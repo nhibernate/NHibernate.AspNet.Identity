@@ -76,7 +76,12 @@ namespace NHibernate.AspNet.Identity
 
             this.Property(x => x.TwoFactorEnabled);
 
-            this.Property(x => x.UserName);
+            this.Property(x => x.UserName, map =>
+            {
+                map.Length(256);
+                map.NotNullable(true);
+                map.Unique(true);
+            });
 
             this.Property(x => x.SecurityStamp);
 

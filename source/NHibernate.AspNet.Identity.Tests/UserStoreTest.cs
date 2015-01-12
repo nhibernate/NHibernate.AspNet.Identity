@@ -111,5 +111,29 @@ namespace NHibernate.AspNet.Identity.Tests
             Assert.IsTrue(_session.Query<IdentityRole>().Any(x => x.Name == "ADM"));
         }
 
+        [TestMethod]
+        public void WhenRemoveUserFromRole_ThenDoNotDeleteRole_BugFix()
+        {
+            var user = new IdentityUser("Lukz 05");
+            var role = new IdentityRole("ADM05");
+            var store = new UserStore<IdentityUser>(_session);
+            var roleStore = new RoleStore<IdentityRole>(_session);
+
+            roleStore.CreateAsync(role);
+            store.CreateAsync(user);
+            store.AddToRoleAsync(user, "ADM05");
+
+            Assert.IsTrue(_session.Query<IdentityRole>().Any(x => x.Name == "ADM05"));
+            Assert.IsTrue(_session.Query<IdentityUser>().Any(x => x.UserName == "Lukz 05"));
+            Assert.IsTrue(store.IsInRoleAsync(user, "ADM05").Result);
+
+            var result = store.RemoveFromRoleAsync(user, "ADM05");
+
+            Assert.IsNull(result.Exception);
+            Assert.IsFalse(store.IsInRoleAsync(user, "ADM05").Result);
+            Assert.IsTrue(_session.Query<IdentityUser>().Any(x => x.UserName == "Lukz 05"));
+            Assert.IsTrue(_session.Query<IdentityRole>().Any(x => x.Name == "ADM05"));
+        }
+
     }
 }

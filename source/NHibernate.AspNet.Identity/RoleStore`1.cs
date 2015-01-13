@@ -50,7 +50,7 @@ namespace NHibernate.AspNet.Identity
                 Context.Save(role);
                 transaction.Complete();
                 int num = await Task.FromResult(0);
-            }
+        }
         }
 
         public virtual async Task DeleteAsync(TRole role)
@@ -61,7 +61,7 @@ namespace NHibernate.AspNet.Identity
                 throw new ArgumentNullException("role");
             }
             using (var transaction = new TransactionScope(TransactionScopeOption.Required))
-            {
+        {
                 Context.Delete(role);
                 transaction.Complete();
                 int num = await Task.FromResult(0);

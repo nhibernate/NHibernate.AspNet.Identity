@@ -100,7 +100,7 @@ namespace NHibernate.AspNet.Identity
             if (this._disposed)
             {
                 throw new ObjectDisposedException(this.GetType().Name);
-            }
+        }
         }
 
         public void Dispose()
@@ -279,7 +279,7 @@ namespace NHibernate.AspNet.Identity
                 }
                 transaction.Complete();
             }
-
+            
             return (Task)Task.FromResult<int>(0);
         }
 
@@ -342,7 +342,7 @@ namespace NHibernate.AspNet.Identity
             else
             {
                 return Task.FromResult<IList<string>>((IList<string>)Enumerable.ToList<string>(Enumerable.Select<IdentityRole, string>((IEnumerable<IdentityRole>)user.Roles, (Func<IdentityRole, string>)(u => u.Name))));
-            }
+        }
         }
 
         public virtual Task<bool> IsInRoleAsync(TUser user, string role)
@@ -359,7 +359,7 @@ namespace NHibernate.AspNet.Identity
             else
             {
                 return Task.FromResult<bool>(Enumerable.Any<IdentityRole>((IEnumerable<IdentityRole>)user.Roles, (Func<IdentityRole, bool>)(r => r.Name.ToUpper() == role.ToUpper())));
-            }
+        }
         }
 
         public virtual Task SetPasswordHashAsync(TUser user, string passwordHash)
@@ -383,7 +383,7 @@ namespace NHibernate.AspNet.Identity
             else
             {
                 return Task.FromResult<string>(user.PasswordHash);
-            }
+        }
         }
 
         public virtual Task SetSecurityStampAsync(TUser user, string stamp)
@@ -407,7 +407,7 @@ namespace NHibernate.AspNet.Identity
             else
             {
                 return Task.FromResult<string>(user.SecurityStamp);
-            }
+        }
         }
 
         public virtual Task<bool> HasPasswordAsync(TUser user)

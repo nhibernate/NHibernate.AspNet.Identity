@@ -28,13 +28,13 @@ namespace NHibernate.AspNet.Identity
             this.Context = context;
         }
 
-        public Task<TRole> FindByIdAsync(string roleId)
+        public virtual Task<TRole> FindByIdAsync(string roleId)
         {
             this.ThrowIfDisposed();
             return Task.FromResult(Context.Get<TRole>((object)roleId));
         }
 
-        public Task<TRole> FindByNameAsync(string roleName)
+        public virtual Task<TRole> FindByNameAsync(string roleName)
         {
             this.ThrowIfDisposed();
             return Task.FromResult<TRole>(Queryable.FirstOrDefault<TRole>(Queryable.Where<TRole>(this.Context.Query<TRole>(), (Expression<Func<TRole, bool>>)(u => u.Name.ToUpper() == roleName.ToUpper()))));
@@ -50,7 +50,7 @@ namespace NHibernate.AspNet.Identity
                 Context.Save(role);
                 transaction.Complete();
                 int num = await Task.FromResult(0);
-        }
+            }
         }
 
         public virtual async Task DeleteAsync(TRole role)
@@ -61,7 +61,7 @@ namespace NHibernate.AspNet.Identity
                 throw new ArgumentNullException("role");
             }
             using (var transaction = new TransactionScope(TransactionScopeOption.Required))
-        {
+            {
                 Context.Delete(role);
                 transaction.Complete();
                 int num = await Task.FromResult(0);

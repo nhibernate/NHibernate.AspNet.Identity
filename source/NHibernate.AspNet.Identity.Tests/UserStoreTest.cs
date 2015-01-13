@@ -232,6 +232,26 @@ namespace NHibernate.AspNet.Identity.Tests
         }
 
         [TestMethod]
+        public void FindByNameWithRoles()
+        {
+            var userManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(this._session));
+            var roleManager = new RoleManager<IdentityRole>(new RoleStore<IdentityRole>(this._session));
+            roleManager.Create(new IdentityRole("Admin"));
+            roleManager.Create(new IdentityRole("AO"));
+            var user = new ApplicationUser() { UserName = "test", Email = "aaa@bbb.com", EmailConfirmed = true };
+            userManager.Create(user, "Welcome");
+            userManager.AddToRole(user.Id,"Admin");
+            userManager.AddToRole(user.Id,"AO");
+            // clear session
+            this._session.Flush();
+            this._session.Clear();
+
+            var x = userManager.FindByName("tEsT");
+            Assert.IsNotNull(x);
+            Assert.AreEqual(2, x.Roles.Count);
+        }
+
+        [TestMethod]
         public void FindByEmail()
         {
             var userManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(this._session));

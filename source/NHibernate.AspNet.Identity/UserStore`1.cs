@@ -227,7 +227,7 @@ namespace NHibernate.AspNet.Identity
                 ClaimType = claim.Type,
                 ClaimValue = claim.Value
             });
-            ////Context.Flush();
+
             return Task.FromResult<int>(0);
         }
 

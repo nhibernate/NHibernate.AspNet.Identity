@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
-using System.Transactions;
 using Microsoft.AspNet.Identity;
 using NHibernate.Linq;
 
@@ -45,12 +44,9 @@ namespace NHibernate.AspNet.Identity
             this.ThrowIfDisposed();
             if ((object)role == null)
                 throw new ArgumentNullException("role");
-            using (var transaction = new TransactionScope(TransactionScopeOption.Required))
-            {
-                Context.Save(role);
-                transaction.Complete();
-                int num = await Task.FromResult(0);
-            }
+            Context.Save(role);
+            Context.Flush();
+            await Task.FromResult(0);
         }
 
         public virtual async Task DeleteAsync(TRole role)
@@ -60,12 +56,9 @@ namespace NHibernate.AspNet.Identity
             {
                 throw new ArgumentNullException("role");
             }
-            using (var transaction = new TransactionScope(TransactionScopeOption.Required))
-            {
-                Context.Delete(role);
-                transaction.Complete();
-                int num = await Task.FromResult(0);
-            }
+            Context.Delete(role);
+            Context.Flush();
+            await Task.FromResult(0);
         }
 
         public virtual async Task UpdateAsync(TRole role)
@@ -73,12 +66,9 @@ namespace NHibernate.AspNet.Identity
             this.ThrowIfDisposed();
             if ((object)role == null)
                 throw new ArgumentNullException("role");
-            using (var transaction = new TransactionScope(TransactionScopeOption.Required))
-            {
-                Context.Update(role);
-                transaction.Complete();
-                int num = await Task.FromResult(0);
-            }
+            Context.Update(role);
+            Context.Flush();
+            await Task.FromResult(0);
         }
 
         private void ThrowIfDisposed()

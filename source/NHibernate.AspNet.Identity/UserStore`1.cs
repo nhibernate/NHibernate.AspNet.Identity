@@ -51,7 +51,7 @@ namespace NHibernate.AspNet.Identity
             return this.GetUserAggregateAsync((TUser u) => u.UserName.ToUpper() == userName.ToUpper());
         }
 
-        public virtual async Task CreateAsync(TUser user)
+        public virtual Task CreateAsync(TUser user)
         {
             this.ThrowIfDisposed();
             if ((object)user == null)
@@ -59,12 +59,13 @@ namespace NHibernate.AspNet.Identity
                 throw new ArgumentNullException("user");
             }
 
-            await Task.FromResult(this.Context.Save(user));
+            Context.Save(user);
             Context.Flush();
 
+            return Task.FromResult(0);
         }
 
-        public virtual async Task DeleteAsync(TUser user)
+        public virtual Task DeleteAsync(TUser user)
         {
             if ((object)user == null)
             {
@@ -73,11 +74,11 @@ namespace NHibernate.AspNet.Identity
 
             this.Context.Delete(user);
             Context.Flush();
-            await Task.FromResult(0);
 
+            return Task.FromResult(0);
         }
 
-        public virtual async Task UpdateAsync(TUser user)
+        public virtual Task UpdateAsync(TUser user)
         {
             this.ThrowIfDisposed();
             if ((object)user == null)
@@ -87,8 +88,8 @@ namespace NHibernate.AspNet.Identity
 
             this.Context.Update(user);
             Context.Flush();
-            await Task.FromResult(0);
 
+            return Task.FromResult(0);
         }
 
         private void ThrowIfDisposed()
@@ -115,7 +116,7 @@ namespace NHibernate.AspNet.Identity
             this.Context = (ISession)null;
         }
 
-        public virtual async Task<TUser> FindAsync(UserLoginInfo login)
+        public virtual Task<TUser> FindAsync(UserLoginInfo login)
         {
             this.ThrowIfDisposed();
             if (login == null)
@@ -128,9 +129,7 @@ namespace NHibernate.AspNet.Identity
                         where l.LoginProvider == login.LoginProvider && l.ProviderKey == login.ProviderKey
                         select u;
 
-            TUser entity = await Task.FromResult(query.SingleOrDefault());
-
-            return entity;
+            return Task.FromResult(query.SingleOrDefault());
         }
 
         public virtual Task AddLoginAsync(TUser user, UserLoginInfo login)

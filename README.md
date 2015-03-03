@@ -1,3 +1,4 @@
+[![Stories in Ready](https://badge.waffle.io/milesibastos/nhibernate.aspnet.identity.png?label=ready&title=Ready)](https://waffle.io/milesibastos/nhibernate.aspnet.identity)
 NHibernate.AspNet.Identity
 =======================
 

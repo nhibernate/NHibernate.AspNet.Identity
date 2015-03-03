@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
-using System.Transactions;
 using Microsoft.AspNet.Identity;
 using NHibernate.Linq;
 
@@ -28,57 +27,48 @@ namespace NHibernate.AspNet.Identity
             this.Context = context;
         }
 
-        public Task<TRole> FindByIdAsync(string roleId)
+        public virtual Task<TRole> FindByIdAsync(string roleId)
         {
             this.ThrowIfDisposed();
             return Task.FromResult(Context.Get<TRole>((object)roleId));
         }
 
-        public Task<TRole> FindByNameAsync(string roleName)
+        public virtual Task<TRole> FindByNameAsync(string roleName)
         {
             this.ThrowIfDisposed();
             return Task.FromResult<TRole>(Queryable.FirstOrDefault<TRole>(Queryable.Where<TRole>(this.Context.Query<TRole>(), (Expression<Func<TRole, bool>>)(u => u.Name.ToUpper() == roleName.ToUpper()))));
         }
 
-        public virtual async Task CreateAsync(TRole role)
+        public virtual  Task CreateAsync(TRole role)
         {
             this.ThrowIfDisposed();
             if ((object)role == null)
                 throw new ArgumentNullException("role");
-            using (var transaction = new TransactionScope(TransactionScopeOption.Required))
-            {
-                Context.Save(role);
-                transaction.Complete();
-                int num = await Task.FromResult(0);
-        }
+            Context.Save(role);
+            Context.Flush();
+            return Task.FromResult(0);
         }
 
-        public virtual async Task DeleteAsync(TRole role)
+        public virtual Task DeleteAsync(TRole role)
         {
             this.ThrowIfDisposed();
             if (role == null)
             {
                 throw new ArgumentNullException("role");
             }
-            using (var transaction = new TransactionScope(TransactionScopeOption.Required))
-        {
-                Context.Delete(role);
-                transaction.Complete();
-                int num = await Task.FromResult(0);
-            }
+            Context.Delete(role);
+            Context.Flush();
+            return Task.FromResult(0);
         }
 
-        public virtual async Task UpdateAsync(TRole role)
+        public virtual Task UpdateAsync(TRole role)
         {
             this.ThrowIfDisposed();
             if ((object)role == null)
                 throw new ArgumentNullException("role");
-            using (var transaction = new TransactionScope(TransactionScopeOption.Required))
-            {
-                Context.Update(role);
-                transaction.Complete();
-                int num = await Task.FromResult(0);
-            }
+            Context.Update(role);
+            Context.Flush();
+            return Task.FromResult(0);
         }
 
         private void ThrowIfDisposed()

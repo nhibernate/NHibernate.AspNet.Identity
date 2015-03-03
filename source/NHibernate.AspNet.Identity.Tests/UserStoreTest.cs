@@ -38,39 +38,40 @@ namespace NHibernate.AspNet.Identity.Tests
             Assert.IsNull(user);
         }
 
-        [TestMethod]
-        public void WhenAddLoginAsync()
-        {
-            var user = new IdentityUser("Lukz");
-            var login = new UserLoginInfo("ProviderTest02", "ProviderKey02");
-            var store = new UserStore<IdentityUser>(_session);
-            var result = store.AddLoginAsync(user, login);
+        // Those tests are not in sync with the Entity Framework provider behaviour
+        //[TestMethod]
+        //public void WhenAddLoginAsync()
+        //{
+        //    var user = new IdentityUser("Lukz");
+        //    var login = new UserLoginInfo("ProviderTest02", "ProviderKey02");
+        //    var store = new UserStore<IdentityUser>(_session);
+        //    var result = store.AddLoginAsync(user, login);
 
-            var actual = _session.Query<IdentityUser>().FirstOrDefault(x => x.UserName == user.UserName);
-            var userStored = store.FindAsync(login).Result;
+        //    var actual = _session.Query<IdentityUser>().FirstOrDefault(x => x.UserName == user.UserName);
+        //    var userStored = store.FindAsync(login).Result;
 
-            Assert.IsNull(result.Exception);
-            Assert.IsNotNull(actual);
-            Assert.AreEqual(user.UserName, actual.UserName);
-            Assert.AreEqual(user.UserName, userStored.UserName);
-        }
+        //    Assert.IsNull(result.Exception);
+        //    Assert.IsNotNull(actual);
+        //    Assert.AreEqual(user.UserName, actual.UserName);
+        //    Assert.AreEqual(user.UserName, userStored.UserName);
+        //}
 
-        [TestMethod]
-        public void WhenRemoveLoginAsync()
-        {
-            var user = new IdentityUser("Lukz 03");
-            var login = new UserLoginInfo("ProviderTest03", "ProviderKey03");
-            var store = new UserStore<IdentityUser>(_session);
-            store.AddLoginAsync(user, login);
+        //[TestMethod]
+        //public void WhenRemoveLoginAsync()
+        //{
+        //    var user = new IdentityUser("Lukz 03");
+        //    var login = new UserLoginInfo("ProviderTest03", "ProviderKey03");
+        //    var store = new UserStore<IdentityUser>(_session);
+        //    store.AddLoginAsync(user, login);
 
-            Assert.IsTrue(user.Logins.Any());
+        //    Assert.IsTrue(user.Logins.Any());
 
-            var result = store.RemoveLoginAsync(user, login);
+        //    var result = store.RemoveLoginAsync(user, login);
 
-            var actual = _session.Query<IdentityUser>().FirstOrDefault(x => x.UserName == user.UserName);
-            Assert.IsNull(result.Exception);
-            Assert.IsFalse(actual.Logins.Any());
-        }
+        //    var actual = _session.Query<IdentityUser>().FirstOrDefault(x => x.UserName == user.UserName);
+        //    Assert.IsNull(result.Exception);
+        //    Assert.IsFalse(actual.Logins.Any());
+        //}
 
         [TestMethod]
         public void WhenCeateUserAsync()
@@ -232,6 +233,26 @@ namespace NHibernate.AspNet.Identity.Tests
         }
 
         [TestMethod]
+        public void FindByNameWithRoles()
+        {
+            var userManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(this._session));
+            var roleManager = new RoleManager<IdentityRole>(new RoleStore<IdentityRole>(this._session));
+            roleManager.Create(new IdentityRole("Admin"));
+            roleManager.Create(new IdentityRole("AO"));
+            var user = new ApplicationUser() { UserName = "test", Email = "aaa@bbb.com", EmailConfirmed = true };
+            userManager.Create(user, "Welcome");
+            userManager.AddToRole(user.Id, "Admin");
+            userManager.AddToRole(user.Id, "AO");
+            // clear session
+            this._session.Flush();
+            this._session.Clear();
+
+            var x = userManager.FindByName("tEsT");
+            Assert.IsNotNull(x);
+            Assert.AreEqual(2, x.Roles.Count);
+        }
+
+        [TestMethod]
         public void FindByEmail()
         {
             var userManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(this._session));
@@ -245,10 +266,10 @@ namespace NHibernate.AspNet.Identity.Tests
         public void AddClaim()
         {
             var userManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(this._session));
-            userManager.Create(new ApplicationUser() { UserName = "test", Email = "aaa@bbb.com", EmailConfirmed = true }, "Welcome");
-            var x = userManager.FindByEmail("aaa@bbb.com");
-            userManager.AddClaim(x.Id, new Claim(ClaimTypes.Role, "Admin"));
-            Assert.AreEqual(1, userManager.GetClaims(x.Id).Count());
+            var user = new ApplicationUser() { UserName = "test", Email = "aaa@bbb.com", EmailConfirmed = true };
+            userManager.Create(user, "Welcome");
+            userManager.AddClaim(user.Id, new Claim(ClaimTypes.Role, "Admin"));
+            Assert.AreEqual(1, userManager.GetClaims(user.Id).Count());
         }
 
         [TestMethod]
@@ -280,6 +301,46 @@ namespace NHibernate.AspNet.Identity.Tests
             Assert.AreEqual(2, x.Claims.Count);
             Assert.AreEqual(1, x.Roles.Count);
             Assert.AreEqual(1, x.Logins.Count);
+        }
+
+        [TestMethod]
+        public void CreateWithoutCommitingTransactionScopeShouldNotInsertRows()
+        {
+            var userManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(this._session));
+            var roleManager = new RoleManager<IdentityRole>(new RoleStore<IdentityRole>(this._session));
+            using (var ts = new TransactionScope(TransactionScopeOption.RequiresNew))
+            {
+                // session is not opened inside the scope so we need to enlist it manually
+                ((System.Data.Common.DbConnection)_session.Connection).EnlistTransaction(System.Transactions.Transaction.Current);
+                userManager.Create(new ApplicationUser() { UserName = "test", Email = "aaa@bbb.com", EmailConfirmed = true }, "Welcome1");
+                var x = userManager.FindByEmail("aaa@bbb.com");
+                roleManager.Create(new IdentityRole("Admin"));
+                userManager.AddClaim(x.Id, new Claim("role", "admin"));
+                userManager.AddClaim(x.Id, new Claim("role", "user"));
+                userManager.AddToRole(x.Id, "Admin");
+                userManager.AddLogin(x.Id, new UserLoginInfo("facebook", "1234"));
+            }
+            var x2 = userManager.FindByEmail("aaa@bbb.com");
+            Assert.IsNull(x2);
+        }
+
+         [TestMethod]
+        public void CreateWithoutCommitingNHibernateTransactionShouldNotInsertRows()
+        {
+            var userManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(this._session));
+            var roleManager = new RoleManager<IdentityRole>(new RoleStore<IdentityRole>(this._session));
+            using (var ts = _session.BeginTransaction())
+            {
+                userManager.Create(new ApplicationUser() { UserName = "test", Email = "aaa@bbb.com", EmailConfirmed = true }, "Welcome1");
+                var x = userManager.FindByEmail("aaa@bbb.com");
+                roleManager.Create(new IdentityRole("Admin"));
+                userManager.AddClaim(x.Id, new Claim("role", "admin"));
+                userManager.AddClaim(x.Id, new Claim("role", "user"));
+                userManager.AddToRole(x.Id, "Admin");
+                userManager.AddLogin(x.Id, new UserLoginInfo("facebook", "1234"));
+            }
+            var x2 = userManager.FindByEmail("aaa@bbb.com");
+            Assert.IsNull(x2);
         }
     }
 }

@@ -150,6 +150,7 @@ namespace NHibernate.AspNet.Identity
                 LoginProvider = login.LoginProvider
             });
 
+            this.Context.SaveOrUpdate(user);
             return Task.FromResult<int>(0);
         }
 
@@ -169,6 +170,7 @@ namespace NHibernate.AspNet.Identity
             if (info != null)
             {
                 user.Logins.Remove(info);
+                this.Context.Update(user);
             }
 
             return Task.FromResult<int>(0);

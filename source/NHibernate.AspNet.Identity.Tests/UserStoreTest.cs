@@ -38,40 +38,47 @@ namespace NHibernate.AspNet.Identity.Tests
             Assert.IsNull(user);
         }
 
-        // Those tests are not in sync with the Entity Framework provider behaviour
-        //[TestMethod]
-        //public void WhenAddLoginAsync()
-        //{
-        //    var user = new IdentityUser("Lukz");
-        //    var login = new UserLoginInfo("ProviderTest02", "ProviderKey02");
-        //    var store = new UserStore<IdentityUser>(_session);
-        //    var result = store.AddLoginAsync(user, login);
+        [TestMethod]
+        public void WhenAddLoginAsync()
+        {
+            var user = new IdentityUser("Lukz");
+            var login = new UserLoginInfo("ProviderTest02", "ProviderKey02");
+            var store = new UserStore<IdentityUser>(_session);
+            using (var ts = new TransactionScope(TransactionScopeOption.RequiresNew))
+            {
+                var result = store.AddLoginAsync(user, login);
+                ts.Complete();
+                Assert.IsNull(result.Exception);
+            }
 
-        //    var actual = _session.Query<IdentityUser>().FirstOrDefault(x => x.UserName == user.UserName);
-        //    var userStored = store.FindAsync(login).Result;
+            var actual = _session.Query<IdentityUser>().FirstOrDefault(x => x.UserName == user.UserName);
+            var userStored = store.FindAsync(login).Result;
 
-        //    Assert.IsNull(result.Exception);
-        //    Assert.IsNotNull(actual);
-        //    Assert.AreEqual(user.UserName, actual.UserName);
-        //    Assert.AreEqual(user.UserName, userStored.UserName);
-        //}
+            Assert.IsNotNull(actual);
+            Assert.AreEqual(user.UserName, actual.UserName);
+            Assert.AreEqual(user.UserName, userStored.UserName);
+        }
 
-        //[TestMethod]
-        //public void WhenRemoveLoginAsync()
-        //{
-        //    var user = new IdentityUser("Lukz 03");
-        //    var login = new UserLoginInfo("ProviderTest03", "ProviderKey03");
-        //    var store = new UserStore<IdentityUser>(_session);
-        //    store.AddLoginAsync(user, login);
+        [TestMethod]
+        public void WhenRemoveLoginAsync()
+        {
+            var user = new IdentityUser("Lukz 03");
+            var login = new UserLoginInfo("ProviderTest03", "ProviderKey03");
+            var store = new UserStore<IdentityUser>(_session);
+            store.AddLoginAsync(user, login);
 
-        //    Assert.IsTrue(user.Logins.Any());
+            Assert.IsTrue(user.Logins.Any());
 
-        //    var result = store.RemoveLoginAsync(user, login);
+            using (var ts = new TransactionScope(TransactionScopeOption.RequiresNew))
+            {
+                var result = store.RemoveLoginAsync(user, login);
+                ts.Complete();
+                Assert.IsNull(result.Exception);
+            }
 
-        //    var actual = _session.Query<IdentityUser>().FirstOrDefault(x => x.UserName == user.UserName);
-        //    Assert.IsNull(result.Exception);
-        //    Assert.IsFalse(actual.Logins.Any());
-        //}
+            var actual = _session.Query<IdentityUser>().FirstOrDefault(x => x.UserName == user.UserName);
+            Assert.IsFalse(actual.Logins.Any());
+        }
 
         [TestMethod]
         public void WhenCeateUserAsync()
@@ -324,7 +331,7 @@ namespace NHibernate.AspNet.Identity.Tests
             Assert.IsNull(x2);
         }
 
-         [TestMethod]
+        [TestMethod]
         public void CreateWithoutCommitingNHibernateTransactionShouldNotInsertRows()
         {
             var userManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(this._session));

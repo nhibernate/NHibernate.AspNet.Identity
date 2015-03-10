@@ -33,7 +33,7 @@ namespace NHibernate.AspNet.Identity
                 throw new ArgumentNullException("context");
             }
 
-            this.ShouldDisposeSession = true;
+            this.ShouldDisposeSession = false;
             this.Context = context;
         }
 
@@ -60,7 +60,6 @@ namespace NHibernate.AspNet.Identity
             }
 
             Context.Save(user);
-            Context.Flush();
 
             return Task.FromResult(0);
         }
@@ -73,7 +72,6 @@ namespace NHibernate.AspNet.Identity
             }
 
             this.Context.Delete(user);
-            Context.Flush();
 
             return Task.FromResult(0);
         }
@@ -87,7 +85,6 @@ namespace NHibernate.AspNet.Identity
             }
 
             this.Context.Update(user);
-            Context.Flush();
 
             return Task.FromResult(0);
         }

@@ -52,7 +52,7 @@ namespace NHibernate.AspNet.Identity.Tests
             var mapping = mapper.CompileMappingForEach(allEntities);
 
             _configuration = new Configuration();
-            _configuration.Configure("sqlite-nhibernate-config.xml");
+            _configuration.Configure("mysql-nhibernate-config.xml");
             foreach (var map in mapping)
             {
                 Console.WriteLine(map.AsString());

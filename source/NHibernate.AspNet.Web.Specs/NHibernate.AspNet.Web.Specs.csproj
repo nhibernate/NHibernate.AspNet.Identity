@@ -197,7 +197,7 @@
   </Target>
   <PropertyGroup Label="DownloadIEDriverBuildTask">
     <CoreBuildDependsOn>DownloadIEDriver;$(CoreBuildDependsOn)</CoreBuildDependsOn>
-    <IEDriverInstallPath>$(SolutionDir)packages\Selenium.WebDriver.IEDriver.2.45.0.1\</IEDriverInstallPath>
+    <IEDriverInstallPath>$([System.IO.Path]::GetFullPath($(SolutionDir)..\packages\Selenium.WebDriver.IEDriver.2.45.0.1\))</IEDriverInstallPath>
     <IEDriverToolsPath>$(IEDriverInstallPath)tools\</IEDriverToolsPath>
     <IEDriverInitScriptPath>$(IEDriverToolsPath)Init.ps1</IEDriverInitScriptPath>
     <IEDriverPath>$(IEDriverInstallPath)content\IEDriverServer.exe</IEDriverPath>
@@ -208,7 +208,7 @@
   </Target>
   <PropertyGroup Label="DownloadChromeDriverBuildTask">
     <CoreBuildDependsOn>DownloadChromeDriver;$(CoreBuildDependsOn)</CoreBuildDependsOn>
-    <ChromeDriverInstallPath>$(SolutionDir)packages\Selenium.WebDriver.ChromeDriver.2.14.0.0\</ChromeDriverInstallPath>
+    <ChromeDriverInstallPath>$([System.IO.Path]::GetFullPath($(SolutionDir)..\packages\Selenium.WebDriver.ChromeDriver.2.14.0.0\))</ChromeDriverInstallPath>
     <ChromeDriverToolsPath>$(ChromeDriverInstallPath)tools\</ChromeDriverToolsPath>
     <ChromeDriverInitScriptPath>$(ChromeDriverToolsPath)Init.ps1</ChromeDriverInitScriptPath>
     <ChromeDriverPath>$(ChromeDriverInstallPath)content\chromedriver.exe</ChromeDriverPath>
@@ -217,7 +217,7 @@
   <Target Name="DownloadChromeDriver" Label="DownloadChromeDriverBuildTask">
     <Exec Condition="!Exists('$(ChromeDriverPath)')" Command="$(PowerShellExe) -NonInteractive -executionpolicy Unrestricted -command &quot;&amp; { &amp;'$(ChromeDriverInitScriptPath)' '$(ChromeDriverInstallPath)' '$(ChromeDriverToolsPath)'} &quot;" />
   </Target>
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
   </Target>

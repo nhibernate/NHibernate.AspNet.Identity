@@ -1,6 +1,10 @@
 ﻿using FluentNHibernate.Testing;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NHibernate.AspNet.Identity.Tests.Models;
+using NUnit.Framework;
+using TestClass = NUnit.Framework.TestFixtureAttribute;
+using TestInitialize = NUnit.Framework.SetUpAttribute;
+using TestCleanup = NUnit.Framework.TearDownAttribute;
+using TestMethod = NUnit.Framework.TestAttribute;
 
 namespace NHibernate.AspNet.Identity.Tests
 {

@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>$id$</id>
+    <version>$version$</version>
+    <title>$title$</title>
+    <authors>$author$</authors>
+    <owners>$author$</owners>
+    <licenseUrl>http://opensource.org/licenses/MIT</licenseUrl>
+    <projectUrl>https://github.com/milesibastos/NHibernate.AspNet.Identity</projectUrl>
+    <iconUrl>https://raw.githubusercontent.com/nhibernate/nhibernate-core/master/logo/NHibernate-NuGet.png</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>$description$</description>
+    <releaseNotes>Summary of changes: https://ci.appveyor.com/project/milesibastos/nhibernate-aspnet-identity </releaseNotes>
+    <copyright>Copyright 2015</copyright>
+    <tags>NHibernate AspNet Identity</tags>
+  </metadata>
+</package>

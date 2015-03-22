@@ -1,4 +1,6 @@
+[![Build status](https://ci.appveyor.com/api/projects/status/m3in48hf0846qtot?svg=true)](https://ci.appveyor.com/project/milesibastos/nhibernate-aspnet-identity)
 [![Stories in Ready](https://badge.waffle.io/milesibastos/nhibernate.aspnet.identity.png?label=ready&title=Ready)](https://waffle.io/milesibastos/nhibernate.aspnet.identity)
+
 NHibernate.AspNet.Identity
 =======================
 

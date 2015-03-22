@@ -8,9 +8,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("NHibernate.AspNet.Identity")]
 [assembly: AssemblyDescription("ASP.NET Identity provider for NHibernate")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Antonio Milesi Bastos")]
+[assembly: AssemblyCompany("@milesibastos")]
 [assembly: AssemblyProduct("NHibernate.AspNet.Identity")]
-[assembly: AssemblyCopyright("Copyright © milesibastos.com 2013")]
+[assembly: AssemblyCopyright("Copyright © @milesibastos 2013-2015")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

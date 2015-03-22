@@ -8,9 +8,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("NHibernate.AspNet.Web.Specs")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("PETROBRAS")]
+[assembly: AssemblyCompany("@milesibastos")]
 [assembly: AssemblyProduct("NHibernate.AspNet.Web.Specs")]
-[assembly: AssemblyCopyright("Copyright © PETROBRAS 2014")]
+[assembly: AssemblyCopyright("Copyright © @milesibastos 2013-2015")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

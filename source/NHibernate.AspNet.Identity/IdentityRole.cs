@@ -31,7 +31,7 @@ namespace NHibernate.AspNet.Identity
             this.Id(x => x.Id, m => m.Generator(new UUIDHexCombGeneratorDef("D")));
             this.Property(x => x.Name, map =>
             {
-                map.Length(256);
+                map.Length(255);
                 map.NotNullable(true);
                 map.Unique(true);
             });

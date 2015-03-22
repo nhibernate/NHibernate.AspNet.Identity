@@ -78,7 +78,7 @@ namespace NHibernate.AspNet.Identity
 
             this.Property(x => x.UserName, map =>
             {
-                map.Length(256);
+                map.Length(255);
                 map.NotNullable(true);
                 map.Unique(true);
             });

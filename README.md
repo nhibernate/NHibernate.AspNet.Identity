@@ -1,14 +1,17 @@
 [![Build status](https://ci.appveyor.com/api/projects/status/m3in48hf0846qtot?svg=true)](https://ci.appveyor.com/project/milesibastos/nhibernate-aspnet-identity)
-[![Stories in Ready](https://badge.waffle.io/milesibastos/nhibernate.aspnet.identity.png?label=ready&title=Ready)](https://waffle.io/milesibastos/nhibernate.aspnet.identity)
+[![Stories in Ready](https://badge.waffle.io/nhibernate/NHibernate.AspNet.Identity.svg?label=ready&title=Ready)](http://waffle.io/nhibernate/NHibernate.AspNet.Identity) 
+
 
 NHibernate.AspNet.Identity
 =======================
 
 ASP.NET Identity provider that users NHibernate for storage
 
+[![Throughput Graph](https://graphs.waffle.io/nhibernate/NHibernate.AspNet.Identity/throughput.svg)](https://waffle.io/nhibernate/NHibernate.AspNet.Identity/metrics) 
+
 ## About this ##
 
-[![About this](http://milesibastos.github.io/NHibernate.AspNet.Identity/images/about.png)](http://youtu.be/pb4QgjXkT7E)
+[![About this](http://nhibernate.github.io/NHibernate.AspNet.Identity/images/about.png)](http://youtu.be/pb4QgjXkT7E)
 
 ## Purpose ##
 

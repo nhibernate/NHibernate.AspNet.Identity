@@ -7,7 +7,11 @@ using NHibernate.Linq;
 
 namespace NHibernate.AspNet.Identity
 {
-    public class RoleStore<TRole> : IQueryableRoleStore<TRole>, IRoleStore<TRole>, IDisposable where TRole : IdentityRole
+    public class RoleStore<TRole> : 
+        IQueryableRoleStore<TRole>, 
+        IRoleStore<TRole>, 
+        IDisposable 
+        where TRole : IdentityRole
     {
         private bool _disposed;
 

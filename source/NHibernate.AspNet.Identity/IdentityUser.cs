@@ -1,123 +1,110 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
-using Microsoft.AspNet.Identity;
-using NHibernate.AspNet.Identity.DomainModel;
-using NHibernate.Mapping.ByCode;
-using NHibernate.Mapping.ByCode.Conformist;
 
 namespace NHibernate.AspNet.Identity
 {
-    public class IdentityUser : EntityWithTypedId<string>, IUser
+    public class IdentityUser : IdentityUser<string>
     {
-        public virtual int AccessFailedCount { get; set; }
-
-        public virtual string Email { get; set; }
-
-        public virtual bool EmailConfirmed { get; set; }
-
-        public virtual bool LockoutEnabled { get; set; }
-
-        public virtual DateTime? LockoutEndDateUtc { get; set; }
-
-        public virtual string PasswordHash { get; set; }
-
-        public virtual string PhoneNumber { get; set; }
-
-        public virtual bool PhoneNumberConfirmed { get; set; }
-
-        public virtual bool TwoFactorEnabled { get; set; }
-
-        public virtual string UserName { get; set; }
-
-        public virtual string SecurityStamp { get; set; }
-
-        public virtual ICollection<IdentityRole> Roles { get; protected set; }
-
-        public virtual ICollection<IdentityUserClaim> Claims { get; protected set; }
-
-        public virtual ICollection<IdentityUserLogin> Logins { get; protected set; }
-
         public IdentityUser()
         {
-            this.Roles = new List<IdentityRole>();
-            this.Claims = new List<IdentityUserClaim>();
-            this.Logins = new List<IdentityUserLogin>();
+            //Id = Guid.NewGuid().ToString();
         }
 
-        public IdentityUser(string userName)
-            : this()
+        public IdentityUser(string userName) : this()
         {
-            this.UserName = userName;
+            UserName = userName;
         }
     }
 
-    public class IdentityUserMap : ClassMapping<IdentityUser>
+    public class IdentityUser<TKey> where TKey : IEquatable<TKey>
     {
-        public IdentityUserMap()
-        {
-            this.Table("AspNetUsers");
-            this.Id(x => x.Id, m => m.Generator(new UUIDHexCombGeneratorDef("D")));
-
-            this.Property(x => x.AccessFailedCount);
-
-            this.Property(x => x.Email);
-
-            this.Property(x => x.EmailConfirmed);
-
-            this.Property(x => x.LockoutEnabled);
-
-            this.Property(x => x.LockoutEndDateUtc);
-
-            this.Property(x => x.PasswordHash);
-
-            this.Property(x => x.PhoneNumber);
-
-            this.Property(x => x.PhoneNumberConfirmed);
-
-            this.Property(x => x.TwoFactorEnabled);
-
-            this.Property(x => x.UserName, map =>
-            {
-                map.Length(255);
-                map.NotNullable(true);
-                map.Unique(true);
-            });
-
-            this.Property(x => x.SecurityStamp);
-
-            this.Bag(x => x.Claims, map =>
-            {
-                map.Key(k =>
-                {
-                    k.Column("UserId");
-                    k.Update(false); // to prevent extra update afer insert
-                });
-                map.Cascade(Cascade.All | Cascade.DeleteOrphans);
-            }, rel =>
-            {
-                rel.OneToMany();
-            });
-
-            this.Set(x => x.Logins, cam =>
-            {
-                cam.Table("AspNetUserLogins");
-                cam.Key(km => km.Column("UserId"));
-                cam.Cascade(Cascade.All | Cascade.DeleteOrphans);
-            },
-                     map =>
-                     {
-                         map.Component(comp =>
-                         {
-                             comp.Property(p => p.LoginProvider);
-                             comp.Property(p => p.ProviderKey);
-                         });
-                     });
-
-            this.Bag(x => x.Roles, map =>
-            {
-                map.Table("AspNetUserRoles");
-                map.Key(k => k.Column("UserId"));
-            }, rel => rel.ManyToMany(p => p.Column("RoleId")));
+        public IdentityUser() 
+        { 
+            ConcurrencyStamp = Guid.NewGuid().ToString();
+            Roles = new List<IdentityUserRole<TKey>>();
+            Claims = new List<IdentityUserClaim<TKey>>();
+            Logins = new List<IdentityUserLogin<TKey>>();
         }
+
+        public IdentityUser(string userName) : this()
+        {
+            UserName = userName;
+        }
+
+        public virtual TKey Id { get; set; }
+        public virtual string UserName { get; set; }
+        public virtual string NormalizedUserName { get; set; }
+
+        /// <summary>
+        ///     Email
+        /// </summary>
+        public virtual string Email { get; set; }
+
+        public virtual string NormalizedEmail { get; set; }
+
+        /// <summary>
+        ///     True if the email is confirmed, default is false
+        /// </summary>
+        public virtual bool EmailConfirmed { get; set; }
+
+        /// <summary>
+        ///     The salted/hashed form of the user password
+        /// </summary>
+        public virtual string PasswordHash { get; set; }
+
+        /// <summary>
+        /// A random value that should change whenever a users credentials change (password changed, login removed)
+        /// </summary>
+        public virtual string SecurityStamp { get; set; }
+
+        /// <summary>
+        /// A random value that should change whenever a user is persisted to the store
+        /// </summary>
+        public virtual string ConcurrencyStamp { get; set; }
+
+        /// <summary>
+        ///     PhoneNumber for the user
+        /// </summary>
+        public virtual string PhoneNumber { get; set; }
+
+        /// <summary>
+        ///     True if the phone number is confirmed, default is false
+        /// </summary>
+        public virtual bool PhoneNumberConfirmed { get; set; }
+
+        /// <summary>
+        ///     Is two factor enabled for the user
+        /// </summary>
+        public virtual bool TwoFactorEnabled { get; set; }
+
+        /// <summary>
+        ///     DateTime in UTC when lockout ends, any time in the past is considered not locked out.
+        /// </summary>
+        public virtual DateTimeOffset? LockoutEnd { get; set; }
+
+        /// <summary>
+        ///     Is lockout enabled for this user
+        /// </summary>
+        public virtual bool LockoutEnabled { get; set; }
+
+        /// <summary>
+        ///     Used to record failures for the purposes of lockout
+        /// </summary>
+        public virtual int AccessFailedCount { get; set; }
+
+        /// <summary>
+        ///     Navigation property for users in the role
+        /// </summary>
+        public virtual ICollection<IdentityUserRole<TKey>> Roles { get; private set; }
+
+        /// <summary>
+        ///     Navigation property for users claims
+        /// </summary>
+        public virtual ICollection<IdentityUserClaim<TKey>> Claims { get; private set; }
+
+        /// <summary>
+        ///     Navigation property for users logins
+        /// </summary>
+        public virtual ICollection<IdentityUserLogin<TKey>> Logins { get; private set; }
     }
 }

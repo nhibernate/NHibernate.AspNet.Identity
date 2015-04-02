@@ -68,6 +68,7 @@
     <Compile Include="DomainModel\ValueObject.cs" />
     <Compile Include="Helpers\MappingHelper.cs" />
     <Compile Include="IdentityRole.cs" />
+    <Compile Include="IdentityRoleClaim.cs" />
     <Compile Include="IdentityUser.cs" />
     <Compile Include="IdentityUserClaim.cs">
       <SubType>Code</SubType>
@@ -75,18 +76,15 @@
     <Compile Include="IdentityUserLogin.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="IdentityUserRole.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="RoleStore`1.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="UserStore`1.cs">
-      <SubType>Code</SubType>
-    </Compile>
+    <Compile Include="RoleStore.cs" />
+    <Compile Include="UserStore.cs" />
     <Compile Include="UUIDHexCombGeneratorDef.cs" />
   </ItemGroup>
   <ItemGroup>

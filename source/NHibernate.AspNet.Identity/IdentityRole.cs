@@ -1,46 +1,77 @@
-﻿using System.Collections.Generic;
-using Microsoft.AspNet.Identity;
-using NHibernate.AspNet.Identity.DomainModel;
-using NHibernate.Mapping.ByCode;
-using NHibernate.Mapping.ByCode.Conformist;
+using System;
+using System.Collections.Generic;
 
 namespace NHibernate.AspNet.Identity
 {
-    public class IdentityRole : EntityWithTypedId<string>, IRole
+    /// <summary>
+    ///     Represents a Role entity
+    /// </summary>
+    public class IdentityRole : IdentityRole<string>
     {
-        public virtual string Name { get; set; }
-
-        public virtual ICollection<IdentityUser> Users { get; protected set; }
-
+        /// <summary>
+        ///     Constructor
+        /// </summary>
         public IdentityRole()
         {
-            this.Users = (ICollection<IdentityUser>)new List<IdentityUser>();
+            //Id = Guid.NewGuid().ToString();
         }
 
+        /// <summary>
+        ///     Constructor
+        /// </summary>
+        /// <param name="roleName"></param>
         public IdentityRole(string roleName) : this()
         {
-            this.Name = roleName;
+            Name = roleName;
         }
     }
 
-    public class IdentityRoleMap : ClassMapping<IdentityRole> 
+    /// <summary>
+    ///     Represents a Role entity
+    /// </summary>
+    /// <typeparam name="TKey"></typeparam>
+    public class IdentityRole<TKey> where TKey : IEquatable<TKey>
     {
-        public IdentityRoleMap()
-        {
-            this.Table("AspNetRoles");
-            this.Id(x => x.Id, m => m.Generator(new UUIDHexCombGeneratorDef("D")));
-            this.Property(x => x.Name, map =>
-            {
-                map.Length(255);
-                map.NotNullable(true);
-                map.Unique(true);
-            });
-            this.Bag(x => x.Users, map =>
-            {
-                map.Table("AspNetUserRoles");
-                map.Cascade(Cascade.None);
-                map.Key(k => k.Column("RoleId"));
-            }, rel => rel.ManyToMany(p => p.Column("UserId")));
+        public IdentityRole() 
+        { 
+            Users= new List<IdentityUserRole<TKey>>();
         }
+
+        /// <summary>
+        ///     Constructor
+        /// </summary>
+        /// <param name="roleName"></param>
+        public IdentityRole(string roleName) : this()
+        {
+            Name = roleName;
+            Claims = new List<IdentityRoleClaim<TKey>>();
+            ConcurrencyStamp = Guid.NewGuid().ToString();
+        }
+
+        /// <summary>
+        ///     Navigation property for users in the role
+        /// </summary>
+        public virtual ICollection<IdentityUserRole<TKey>> Users { get; private set; }
+
+        /// <summary>
+        ///     Navigation property for claims in the role
+        /// </summary>
+        public virtual ICollection<IdentityRoleClaim<TKey>> Claims { get; private set; }
+
+        /// <summary>
+        ///     Role id
+        /// </summary>
+        public virtual TKey Id { get; set; }
+
+        /// <summary>
+        ///     Role name
+        /// </summary>
+        public virtual string Name { get; set; }
+        public virtual string NormalizedName { get; set; }
+
+        /// <summary>
+        /// A random value that should change whenever a role is persisted to the store
+        /// </summary>
+        public virtual string ConcurrencyStamp { get; set; }
     }
 }

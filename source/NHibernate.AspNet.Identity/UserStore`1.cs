@@ -15,7 +15,20 @@ namespace NHibernate.AspNet.Identity
     /// Implements IUserStore using NHibernate where TUser is the entity type of the user being stored
     /// </summary>
     /// <typeparam name="TUser"/>
-    public class UserStore<TUser> : IUserLoginStore<TUser>, IUserClaimStore<TUser>, IUserRoleStore<TUser>, IUserPasswordStore<TUser>, IUserSecurityStampStore<TUser>, IQueryableUserStore<TUser>, IUserStore<TUser>, IUserLockoutStore<TUser, string>, IUserEmailStore<TUser>, IUserPhoneNumberStore<TUser>, IUserTwoFactorStore<TUser, string>, IDisposable where TUser : IdentityUser
+    public class UserStore<TUser> : 
+        IUserLoginStore<TUser>, 
+        IUserClaimStore<TUser>, 
+        IUserRoleStore<TUser>, 
+        IUserPasswordStore<TUser>, 
+        IUserSecurityStampStore<TUser>, 
+        IQueryableUserStore<TUser>, 
+        IUserStore<TUser>, 
+        IUserLockoutStore<TUser, string>, 
+        IUserEmailStore<TUser>, 
+        IUserPhoneNumberStore<TUser>, 
+        IUserTwoFactorStore<TUser, string>, 
+        IDisposable 
+        where TUser : IdentityUser
     {
         private bool _disposed;
 

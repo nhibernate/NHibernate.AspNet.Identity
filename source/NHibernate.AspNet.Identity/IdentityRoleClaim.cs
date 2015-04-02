@@ -2,13 +2,13 @@ using System;
 
 namespace NHibernate.AspNet.Identity
 {
-    public class IdentityUserClaim : IdentityUserClaim<string> { }
+    public class IdentityRoleClaim : IdentityRoleClaim<string> { }
 
     /// <summary>
-    ///     EntityType that represents one specific user claim
+    ///     EntityType that represents one specific role claim
     /// </summary>
     /// <typeparam name="TKey"></typeparam>
-    public class IdentityUserClaim<TKey> where TKey : IEquatable<TKey>
+    public class IdentityRoleClaim<TKey> where TKey : IEquatable<TKey>
     {
         /// <summary>
         ///     Primary key
@@ -16,9 +16,9 @@ namespace NHibernate.AspNet.Identity
         public virtual int Id { get; set; }
 
         /// <summary>
-        ///     User Id for the user who owns this claim
+        ///     User Id for the role this claim belongs to
         /// </summary>
-        public virtual TKey UserId { get; set; }
+        public virtual TKey RoleId { get; set; }
 
         /// <summary>
         ///     Claim type

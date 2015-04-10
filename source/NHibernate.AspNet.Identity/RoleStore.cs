@@ -23,7 +23,7 @@ namespace NHibernate.AspNet.Identity
     }
 
     public class RoleStore<TRole, TContext, TKey> :
-        IQueryableRoleStore<TRole>
+        IQueryableRoleStore<TRole, TKey>
         // TODO: IRoleClaimStore<TRole>
         where TRole : IdentityRole<TKey>
         where TKey : IEquatable<TKey>
@@ -298,9 +298,9 @@ namespace NHibernate.AspNet.Identity
             return DeleteAsync(role, default(CancellationToken));
         }
 
-        public Task<TRole> FindByIdAsync(string roleId)
+        public Task<TRole> FindByIdAsync(TKey roleId)
         {
-            return FindByIdAsync(roleId, default(CancellationToken));
+            return FindByIdAsync(ConvertIdToString(roleId), default(CancellationToken));
         }
 
         public Task<TRole> FindByNameAsync(string roleName)

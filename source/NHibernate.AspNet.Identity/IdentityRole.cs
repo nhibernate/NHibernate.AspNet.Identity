@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Microsoft.AspNet.Identity;
 
 namespace NHibernate.AspNet.Identity
 {
@@ -30,7 +31,7 @@ namespace NHibernate.AspNet.Identity
     ///     Represents a Role entity
     /// </summary>
     /// <typeparam name="TKey"></typeparam>
-    public class IdentityRole<TKey> where TKey : IEquatable<TKey>
+    public class IdentityRole<TKey> : IRole<TKey> where TKey : IEquatable<TKey>
     {
         public IdentityRole() 
         { 

@@ -31,14 +31,14 @@ namespace NHibernate.AspNet.Identity
     }
 
     public class UserStore<TUser, TRole, TContext, TKey> :
-        IUserLoginStore<TUser>,
-        IUserRoleStore<TUser>,
-        IUserClaimStore<TUser>,
-        IUserPasswordStore<TUser>,
-        IUserSecurityStampStore<TUser>,
-        IUserEmailStore<TUser>,
-        IUserPhoneNumberStore<TUser>,
-        IQueryableUserStore<TUser>,
+        IQueryableUserStore<TUser, TKey>,
+        IUserLoginStore<TUser, TKey>,
+        IUserRoleStore<TUser, TKey>,
+        IUserClaimStore<TUser, TKey>,
+        IUserPasswordStore<TUser, TKey>,
+        IUserSecurityStampStore<TUser, TKey>,
+        IUserEmailStore<TUser, TKey>,
+        IUserPhoneNumberStore<TUser, TKey>,
         IUserLockoutStore<TUser, TKey>,
         IUserTwoFactorStore<TUser, TKey>
         where TUser : IdentityUser<TKey>

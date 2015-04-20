@@ -5,7 +5,7 @@
 NHibernate.AspNet.Identity
 =======================
 
-ASP.NET Identity provider that users NHibernate for storage
+ASP.NET Identity provider that uses NHibernate for storage
 
 [![Throughput Graph](https://graphs.waffle.io/nhibernate/NHibernate.AspNet.Identity/throughput.svg)](https://waffle.io/nhibernate/NHibernate.AspNet.Identity/metrics) 
 

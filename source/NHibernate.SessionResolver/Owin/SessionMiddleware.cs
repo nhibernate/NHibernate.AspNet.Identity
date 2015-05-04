@@ -27,7 +27,7 @@ namespace NHibernate.Owin
                     if (session.Transaction.IsActive)
                         session.Transaction.Rollback();
 
-                    if (session != null)
+                    if (session != null && session.IsOpen)
                         session.Close();
                 }
             }

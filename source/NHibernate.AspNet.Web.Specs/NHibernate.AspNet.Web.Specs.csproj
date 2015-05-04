@@ -77,10 +77,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\packages\MilesiBastos.SharpArch.Domain.4.0.3000\lib\NET40\SharpArch.Domain.dll</HintPath>
     </Reference>
-    <Reference Include="SharpArch.NHibernate, Version=4.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\packages\MilesiBastos.SharpArch.NHibernate.4.0.3000\lib\NET40\SharpArch.NHibernate.dll</HintPath>
-    </Reference>
     <Reference Include="Should">
       <HintPath>..\..\packages\Should.1.1.20\lib\Should.dll</HintPath>
     </Reference>
@@ -170,6 +166,10 @@
     <ProjectReference Include="..\NHibernate.AspNet.Web\NHibernate.AspNet.Web.csproj">
       <Project>{64ab1955-b578-497e-ac28-2d0641be44a7}</Project>
       <Name>NHibernate.AspNet.Web</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\NHibernate.SessionResolver\NHibernate.SessionResolver.csproj">
+      <Project>{63cd19ed-5019-493e-a4bb-1d19fed25c17}</Project>
+      <Name>NHibernate.SessionResolver</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

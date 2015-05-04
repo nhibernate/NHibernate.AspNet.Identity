@@ -4,7 +4,6 @@ using NHibernate.AspNet.Identity;
 using NHibernate.AspNet.Web.Controllers;
 using NHibernate.AspNet.Web.Models;
 using NUnit.Framework;
-using SharpArch.NHibernate;
 using Should;
 using SpecsFor;
 using SpecsFor.Mvc;
@@ -49,14 +48,14 @@ namespace NHibernate.AspNet.Web.Specs
 		{
 			protected override void Given()
 			{
-                var userManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(NHibernateSession.Current));
+                var session = SessionResolver.Current.GetCurrentSessionFor<ApplicationUser>();
+                var userManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(session));
                 using (var transaction = new TransactionScope())
                 {
                     var user = new ApplicationUser() { UserName = "RealUserName" };
-                    var result = userManager.CreateAsync(user, "RealPassword");
+                    userManager.CreateAsync(user, "RealPassword").Wait();
                     
                     transaction.Complete();
-                    result.Exception.ShouldBeNull();
                 }
 
                 SUT.NavigateTo<AccountController>(c => c.Login("/Home/About"));

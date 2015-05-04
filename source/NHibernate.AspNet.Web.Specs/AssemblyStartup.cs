@@ -1,8 +1,13 @@
 ﻿using System;
 using System.IO;
+using NHibernate.AspNet.Identity.Helpers;
+using NHibernate.AspNet.Web.Models;
 using NUnit.Framework;
-using SharpArch.NHibernate;
 using SpecsFor.Mvc;
+using NHibernate.Mapping.ByCode;
+using NHibernate.Cfg;
+using NHibernate.Tool.hbm2ddl;
+using NHibernate.Context;
 
 namespace NHibernate.AspNet.Web.Specs
 {
@@ -51,12 +56,50 @@ namespace NHibernate.AspNet.Web.Specs
             AppDomain.CurrentDomain.SetData(
                 "DataDirectory", Path.Combine(root, @"SpecsForMvc.TestSite\App_Data"));
 
-            DataConfig.Configure(new SimpleSessionStorage());
+            var internalTypes = new[] {
+                typeof(ApplicationUser)
+            };
+
+            var mapping = MappingHelper.GetIdentityMappings(internalTypes);
+            System.Diagnostics.Debug.WriteLine(mapping.AsString());
+
+            var config = new Configuration().Configure();
+            config.AddDeserializedMapping(mapping, null);
+            BuildSchema(config);
+
+            var factory = config.BuildSessionFactory();
+            SessionResolver.RegisterFactoryToResolve(factory);
         }
+
+        private static void BuildSchema(Configuration config)
+        {
+            var path = Path.Combine(AppDomain.CurrentDomain.GetData("DataDirectory").ToString(), @"schema.sql");
+
+            // this NHibernate tool takes a configuration (with mapping info in)
+            // and exports a database schema from it
+            new SchemaExport(config)
+                .SetOutputFile(path)
+                .Create(true, true /* DROP AND CREATE SCHEMA */);
+        }
+
 
 		[TearDown]
 		public void TearDownTestRun()
 		{
+            foreach (var factory in SessionResolver.Current.GetAllFactories())
+            {
+                if (CurrentSessionContext.HasBind(factory))
+                {
+                    ISession session = CurrentSessionContext.Unbind(factory);
+
+                    if (session.Transaction.IsActive)
+                        session.Transaction.Rollback();
+
+                    if (session != null && session.IsOpen)
+                        session.Close();
+                }
+            }
+
 			_host.Shutdown();
 		}
 	}

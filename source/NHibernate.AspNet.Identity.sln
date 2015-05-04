@@ -1,15 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.30110.0
+VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NHibernate.AspNet.Identity", "NHibernate.AspNet.Identity\NHibernate.AspNet.Identity.csproj", "{C620FAAE-F1B6-479E-9959-C46C20ED0A8A}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{B4B93010-9348-456C-9F18-1305854364F9}"
-	ProjectSection(SolutionItems) = preProject
-		.nuget\NuGet.Config = .nuget\NuGet.Config
-		.nuget\NuGet.targets = .nuget\NuGet.targets
-	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NHibernate.AspNet.Identity.Tests", "NHibernate.AspNet.Identity.Tests\NHibernate.AspNet.Identity.Tests.csproj", "{4AB55157-6F8F-423C-9C6F-A3A92B2101CE}"
 EndProject
@@ -18,6 +12,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NHibernate.AspNet.Web", "NHibernate.AspNet.Web\NHibernate.AspNet.Web.csproj", "{64AB1955-B578-497E-AC28-2D0641BE44A7}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NHibernate.AspNet.Web.Specs", "NHibernate.AspNet.Web.Specs\NHibernate.AspNet.Web.Specs.csproj", "{12933FB3-BE28-4F4F-A43A-0BE836788065}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NHibernate.SessionResolver", "NHibernate.SessionResolver\NHibernate.SessionResolver.csproj", "{63CD19ED-5019-493E-A4BB-1D19FED25C17}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -69,6 +65,16 @@ Global
 		{12933FB3-BE28-4F4F-A43A-0BE836788065}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{12933FB3-BE28-4F4F-A43A-0BE836788065}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{12933FB3-BE28-4F4F-A43A-0BE836788065}.Release|x86.ActiveCfg = Release|Any CPU
+		{63CD19ED-5019-493E-A4BB-1D19FED25C17}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{63CD19ED-5019-493E-A4BB-1D19FED25C17}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{63CD19ED-5019-493E-A4BB-1D19FED25C17}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{63CD19ED-5019-493E-A4BB-1D19FED25C17}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{63CD19ED-5019-493E-A4BB-1D19FED25C17}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{63CD19ED-5019-493E-A4BB-1D19FED25C17}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{63CD19ED-5019-493E-A4BB-1D19FED25C17}.Release|Any CPU.Build.0 = Release|Any CPU
+		{63CD19ED-5019-493E-A4BB-1D19FED25C17}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{63CD19ED-5019-493E-A4BB-1D19FED25C17}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{63CD19ED-5019-493E-A4BB-1D19FED25C17}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

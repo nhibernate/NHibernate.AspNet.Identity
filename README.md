@@ -20,7 +20,7 @@ Entity Framework provider (Microsoft.AspNet.Identity.EntityFramework).
 
 ## Features ##
 * Drop-in replacement ASP.NET Identity with NHibernate as the backing store.
-* Based on same schema requirede by EntityFramework for compatibility model
+* Based on same schema required by EntityFramework for compatibility model
 * Contains the same IdentityUser class used by the EntityFramework provider in the MVC 5 project template.
 * Supports additional profile properties on your application's user model.
 * Provides UserStore<TUser> implementation that implements the same interfaces as the EntityFramework version:

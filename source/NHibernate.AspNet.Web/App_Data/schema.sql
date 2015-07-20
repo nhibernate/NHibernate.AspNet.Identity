@@ -34,15 +34,15 @@
     create table AspNetUserRoles (
         UserId TEXT not null,
        RoleId TEXT not null,
-       constraint FKFAADC1EF92E2FD93 foreign key (RoleId) references AspNetRoles,
-       constraint FKFAADC1EF526E4265 foreign key (UserId) references AspNetUsers
+       constraint FK86803B282B87AB2A foreign key (RoleId) references AspNetRoles,
+       constraint FK86803B28EA778823 foreign key (UserId) references AspNetUsers
     )
 
     create table AspNetUserLogins (
         UserId TEXT not null,
        LoginProvider TEXT,
        ProviderKey TEXT,
-       constraint FK6B768E3C526E4265 foreign key (UserId) references AspNetUsers
+       constraint FKEF896DAEEA778823 foreign key (UserId) references AspNetUsers
     )
 
     create table AspNetRoles (
@@ -56,11 +56,11 @@
        ClaimType TEXT,
        ClaimValue TEXT,
        UserId TEXT,
-       constraint FKE3450235526E4265 foreign key (UserId) references AspNetUsers
+       constraint FKF4F7D992EA778823 foreign key (UserId) references AspNetUsers
     )
 
     create table ApplicationUser (
         applicationuser_key TEXT not null,
        primary key (applicationuser_key),
-       constraint FKBF196D2F8745E746 foreign key (applicationuser_key) references AspNetUsers
+       constraint FK4376B148E75DF37 foreign key (applicationuser_key) references AspNetUsers
     )

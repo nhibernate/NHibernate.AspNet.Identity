@@ -112,10 +112,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\packages\MilesiBastos.SharpArch.Domain.4.0.3000\lib\NET40\SharpArch.Domain.dll</HintPath>
     </Reference>
-    <Reference Include="SharpArch.NHibernate, Version=4.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\packages\MilesiBastos.SharpArch.NHibernate.4.0.3000\lib\NET40\SharpArch.NHibernate.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Data.SQLite, Version=1.0.96.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
@@ -186,7 +182,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\BundleConfig.cs" />
-    <Compile Include="App_Start\DataConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
@@ -273,6 +268,10 @@
     <ProjectReference Include="..\NHibernate.AspNet.Identity\NHibernate.AspNet.Identity.csproj">
       <Project>{c620faae-f1b6-479e-9959-c46c20ed0a8a}</Project>
       <Name>NHibernate.AspNet.Identity</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\NHibernate.SessionResolver\NHibernate.SessionResolver.csproj">
+      <Project>{63cd19ed-5019-493e-a4bb-1d19fed25c17}</Project>
+      <Name>NHibernate.SessionResolver</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>

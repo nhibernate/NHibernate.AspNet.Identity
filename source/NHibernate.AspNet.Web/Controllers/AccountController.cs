@@ -5,7 +5,6 @@ using Microsoft.AspNet.Identity;
 using Microsoft.Owin.Security;
 using NHibernate.AspNet.Identity;
 using NHibernate.AspNet.Web.Models;
-using SharpArch.NHibernate;
 
 namespace NHibernate.AspNet.Web.Controllers
 {
@@ -13,7 +12,7 @@ namespace NHibernate.AspNet.Web.Controllers
     public class AccountController : Controller
     {
         public AccountController()
-            : this(new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(NHibernateSession.Current)))
+            : this(new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(SessionResolver.Current.GetCurrentSessionFor<ApplicationUser>())))
         {
         }
 

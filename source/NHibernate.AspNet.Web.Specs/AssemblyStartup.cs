@@ -35,7 +35,7 @@ namespace NHibernate.AspNet.Web.Specs
             //		tests once for each browser. 
             //config.UseBrowser(BrowserDriver.InternetExplorer);
             //config.UseBrowser(BrowserDriver.Chrome);
-            config.UseBrowser(BrowserDriver.Firefox);
+            config.UseBrowser(BrowserDriver.Chrome);
 
             config.InterceptEmailMessagesOnPort(13565);
 

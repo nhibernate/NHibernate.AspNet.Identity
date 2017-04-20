@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using Microsoft.AspNet.Identity;
@@ -73,19 +74,31 @@ namespace NHibernate.AspNet.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Register(RegisterViewModel model)
         {
-            if (ModelState.IsValid)
+            using (var transaction = NHibernateSession.Current.BeginTransaction())
             {
-                var user = new ApplicationUser() { UserName = model.UserName };
-                var result = await UserManager.CreateAsync(user, model.Password);
-                if (result.Succeeded)
+                if (ModelState.IsValid)
                 {
-                    await SignInAsync(user, isPersistent: false);
-                    return RedirectToAction("Index", "Home");
+                    var user = new ApplicationUser() {UserName = model.UserName};
+                    var result = await UserManager.CreateAsync(user, model.Password);
+                    if (result.Succeeded)
+                    {
+                        //throw new Exception("This should cause the transaction to roll back and thus new user is created.");
+                        result = await UserManager.AddToRoleAsync(user.Id, "Users");
+                        if (result.Succeeded)
+                        {
+                            await SignInAsync(user, isPersistent: false);
+                            return RedirectToAction("Index", "Home");
+                        }
+
+                        AddErrors(result);
+                    }
+                    else
+                    {
+                        AddErrors(result);
+                    }
                 }
-                else
-                {
-                    AddErrors(result);
-                }
+
+                transaction.Commit();
             }
 
             // If we got this far, something failed, redisplay form

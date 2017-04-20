@@ -45,7 +45,6 @@ namespace NHibernate.AspNet.Identity
             if ((object)role == null)
                 throw new ArgumentNullException("role");
             Context.Save(role);
-            Context.Flush();
             return Task.FromResult(0);
         }
 
@@ -57,7 +56,6 @@ namespace NHibernate.AspNet.Identity
                 throw new ArgumentNullException("role");
             }
             Context.Delete(role);
-            Context.Flush();
             return Task.FromResult(0);
         }
 
@@ -67,7 +65,6 @@ namespace NHibernate.AspNet.Identity
             if ((object)role == null)
                 throw new ArgumentNullException("role");
             Context.Update(role);
-            Context.Flush();
             return Task.FromResult(0);
         }
 

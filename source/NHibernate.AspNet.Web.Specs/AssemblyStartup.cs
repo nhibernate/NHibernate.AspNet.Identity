@@ -11,7 +11,7 @@ namespace NHibernate.AspNet.Web.Specs
 	{
 		private SpecsForIntegrationHost _host;
 
-		[SetUp]
+		[OneTimeSetUp]
 		public void SetupTestRun()
 		{
             HostStart();
@@ -54,7 +54,7 @@ namespace NHibernate.AspNet.Web.Specs
             DataConfig.Configure(new SimpleSessionStorage());
         }
 
-		[TearDown]
+		[OneTimeTearDown]
 		public void TearDownTestRun()
 		{
 			_host.Shutdown();

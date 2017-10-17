@@ -85,7 +85,7 @@ namespace NHibernate.AspNet.Identity.Tests
         }
 
         [TestMethod]
-        public void WhenCeateUserAsync()
+        public void WhenCreateUserAsync()
         {
             var userManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(_session));
             var user = new ApplicationUser() { UserName = "RealUserName" };

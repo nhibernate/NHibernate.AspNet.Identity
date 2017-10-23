@@ -4,13 +4,16 @@
     <id>$id$</id>
     <version>$version$</version>
     <title>$title$</title>
-    <authors>$author$</authors>
-    <owners>$author$</owners>
+    <!--<authors>$author$</authors>
+    <owners>$author$</owners>-->
+    <authors>NHibernate community, Hibernate community</authors>
+    <owners>NHibernate community, Hibernate community</owners>
     <licenseUrl>http://opensource.org/licenses/MIT</licenseUrl>
     <projectUrl>https://github.com/milesibastos/NHibernate.AspNet.Identity</projectUrl>
     <iconUrl>https://raw.githubusercontent.com/nhibernate/nhibernate-core/master/logo/NHibernate-NuGet.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>$description$</description>
+    <!--<description>$description$</description>-->
+    <description>ASP.NET Identity provider for NHibernate</description>
     <releaseNotes>Summary of changes: https://ci.appveyor.com/project/milesibastos/nhibernate-aspnet-identity </releaseNotes>
     <copyright>Copyright 2015</copyright>
     <tags>NHibernate AspNet Identity</tags>

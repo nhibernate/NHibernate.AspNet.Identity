@@ -39,36 +39,33 @@ namespace NHibernate.AspNet.Identity
             return Task.FromResult<TRole>(Queryable.FirstOrDefault<TRole>(Queryable.Where<TRole>(this.Context.Query<TRole>(), (Expression<Func<TRole, bool>>)(u => u.Name.ToUpper() == roleName.ToUpper()))));
         }
 
-        public virtual  Task CreateAsync(TRole role)
+        public virtual async Task CreateAsync(TRole role)
         {
             this.ThrowIfDisposed();
             if ((object)role == null)
                 throw new ArgumentNullException("role");
-            Context.Save(role);
-            Context.Flush();
-            return Task.FromResult(0);
+            await Context.SaveAsync(role);
+            await Context.FlushAsync();
         }
 
-        public virtual Task DeleteAsync(TRole role)
+        public virtual async Task DeleteAsync(TRole role)
         {
             this.ThrowIfDisposed();
             if (role == null)
             {
                 throw new ArgumentNullException("role");
             }
-            Context.Delete(role);
-            Context.Flush();
-            return Task.FromResult(0);
+            await Context.DeleteAsync(role);
+            await Context.FlushAsync();
         }
 
-        public virtual Task UpdateAsync(TRole role)
+        public virtual async Task UpdateAsync(TRole role)
         {
             this.ThrowIfDisposed();
             if ((object)role == null)
                 throw new ArgumentNullException("role");
-            Context.Update(role);
-            Context.Flush();
-            return Task.FromResult(0);
+            await Context.UpdateAsync(role);
+            await Context.FlushAsync();
         }
 
         private void ThrowIfDisposed()

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Linq;
 using NHibernate.AspNet.Identity.DomainModel;
@@ -12,7 +12,7 @@ namespace NHibernate.AspNet.Identity.Tests
     public sealed class SessionFactoryProvider
     {
         private static volatile SessionFactoryProvider _instance;
-        private static object _syncRoot = new Object();
+        private static object _syncRoot = new object();
 
         private Configuration _configuration;
 
@@ -26,19 +26,20 @@ namespace NHibernate.AspNet.Identity.Tests
         {
             Name = "NHibernate.AspNet.Identity";
 
-            var baseEntityToIgnore = new[] { 
-                typeof(SharpArch.Domain.DomainModel.Entity), 
-                typeof(EntityWithTypedId<int>), 
-                typeof(EntityWithTypedId<string>), 
+            var baseEntityToIgnore = new[] {
+                typeof(SharpArch.Domain.DomainModel.Entity),
+                typeof(EntityWithTypedId<int>),
+                typeof(EntityWithTypedId<string>),
             };
 
-            var allEntities = new[] { 
-                typeof(IdentityUser), 
-                typeof(ApplicationUser), 
-                typeof(IdentityRole), 
-                typeof(IdentityUserLogin), 
-                typeof(IdentityUserClaim), 
-                typeof(Foo), 
+            var allEntities = new[] {
+                typeof(IdentityUser),
+                typeof(ApplicationUser),
+                typeof(ApplicationRole),
+                typeof(IdentityRole),
+                typeof(IdentityUserLogin),
+                typeof(IdentityUserClaim),
+                typeof(Foo),
             };
 
             var mapper = new ConventionModelMapper();

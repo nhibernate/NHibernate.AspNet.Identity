@@ -1,8 +1,12 @@
-﻿using NHibernate.AspNet.Identity;
+using NHibernate.AspNet.Identity;
 
 namespace NHibernate.AspNet.Identity.Tests.Models
 {
     public class ApplicationUser : IdentityUser
+    {
+    }
+
+    public class ApplicationRole : IdentityRole
     {
     }
 }

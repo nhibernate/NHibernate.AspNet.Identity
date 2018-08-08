@@ -1,9 +1,8 @@
-﻿using System;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Threading.Tasks;
 using Microsoft.AspNet.Identity;
 using NHibernate.Linq;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace NHibernate.AspNet.Identity
 {
@@ -12,7 +11,7 @@ namespace NHibernate.AspNet.Identity
         private bool _disposed;
 
         /// <summary>
-        /// If true then disposing this object will also dispose (close) the session. False means that external code is responsible for disposing the session.
+        /// If true then disposing object will also dispose (close) the session. False means that external code is responsible for disposing the session.
         /// </summary>
         public bool ShouldDisposeSession { get; set; }
 
@@ -21,36 +20,40 @@ namespace NHibernate.AspNet.Identity
         public RoleStore(ISession context)
         {
             if (context == null)
+            {
                 throw new ArgumentNullException("context");
+            }
 
             ShouldDisposeSession = true;
-            this.Context = context;
+            Context = context;
         }
 
         public virtual Task<TRole> FindByIdAsync(string roleId)
         {
-            this.ThrowIfDisposed();
-            return Task.FromResult(Context.Get<TRole>((object)roleId));
+            ThrowIfDisposed();
+            return Context.GetAsync<TRole>(roleId);
         }
 
         public virtual Task<TRole> FindByNameAsync(string roleName)
         {
-            this.ThrowIfDisposed();
-            return Task.FromResult<TRole>(Queryable.FirstOrDefault<TRole>(Queryable.Where<TRole>(this.Context.Query<TRole>(), (Expression<Func<TRole, bool>>)(u => u.Name.ToUpper() == roleName.ToUpper()))));
+            ThrowIfDisposed();
+            return Roles.FirstOrDefaultAsync(u => u.Name.ToUpper() == roleName.ToUpper());
         }
 
         public virtual async Task CreateAsync(TRole role)
         {
-            this.ThrowIfDisposed();
-            if ((object)role == null)
+            ThrowIfDisposed();
+            if (role == null)
+            {
                 throw new ArgumentNullException("role");
+            }
             await Context.SaveAsync(role);
             await Context.FlushAsync();
         }
 
         public virtual async Task DeleteAsync(TRole role)
         {
-            this.ThrowIfDisposed();
+            ThrowIfDisposed();
             if (role == null)
             {
                 throw new ArgumentNullException("role");
@@ -61,39 +64,45 @@ namespace NHibernate.AspNet.Identity
 
         public virtual async Task UpdateAsync(TRole role)
         {
-            this.ThrowIfDisposed();
-            if ((object)role == null)
+            ThrowIfDisposed();
+            if (role == null)
+            {
                 throw new ArgumentNullException("role");
+            }
             await Context.UpdateAsync(role);
             await Context.FlushAsync();
         }
 
         private void ThrowIfDisposed()
         {
-            if (this._disposed)
-                throw new ObjectDisposedException(this.GetType().Name);
+            if (_disposed)
+            {
+                throw new ObjectDisposedException(GetType().Name);
+            }
         }
 
         public void Dispose()
         {
-            this.Dispose(true);
-            GC.SuppressFinalize((object)this);
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
 
         protected virtual void Dispose(bool disposing)
         {
-            if (disposing && !this._disposed && ShouldDisposeSession)
-                this.Context.Dispose();
-            this._disposed = true;
-            this.Context = (ISession)null;
+            if (disposing && !_disposed && ShouldDisposeSession)
+            {
+                Context.Dispose();
+            }
+            _disposed = true;
+            Context = null;
         }
 
         public IQueryable<TRole> Roles
         {
             get
             {
-                this.ThrowIfDisposed();
-                return this.Context.Query<TRole>();
+                ThrowIfDisposed();
+                return Context.Query<TRole>();
             }
         }
     }

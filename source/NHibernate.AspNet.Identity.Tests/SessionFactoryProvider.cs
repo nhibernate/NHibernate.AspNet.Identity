@@ -6,6 +6,7 @@ using NHibernate.AspNet.Identity.Tests.Models;
 using NHibernate.Cfg;
 using NHibernate.Mapping.ByCode;
 using NHibernate.Tool.hbm2ddl;
+using NUnit.Framework;
 
 namespace NHibernate.AspNet.Identity.Tests
 {
@@ -53,7 +54,8 @@ namespace NHibernate.AspNet.Identity.Tests
             var mapping = mapper.CompileMappingForEach(allEntities);
 
             _configuration = new Configuration();
-            _configuration.Configure("sqlite-nhibernate-config.xml");
+            // nunit3 change: the directory is not set by default and must be retrieved from TestContext
+            _configuration.Configure(Path.Combine(TestContext.CurrentContext.TestDirectory, "sqlite-nhibernate-config.xml"));
             foreach (var map in mapping)
             {
                 Console.WriteLine(map.AsString());

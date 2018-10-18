@@ -51,7 +51,7 @@ namespace NHibernate.AspNet.Identity
             return this.GetUserAggregateAsync((TUser u) => u.UserName.ToUpper() == userName.ToUpper());
         }
 
-        public virtual Task CreateAsync(TUser user)
+        public virtual async Task CreateAsync(TUser user)
         {
             this.ThrowIfDisposed();
             if ((object)user == null)
@@ -59,26 +59,22 @@ namespace NHibernate.AspNet.Identity
                 throw new ArgumentNullException("user");
             }
 
-            Context.Save(user);
-            Context.Flush();
-
-            return Task.FromResult(0);
+            await Context.SaveAsync(user);
+            await Context.FlushAsync();
         }
 
-        public virtual Task DeleteAsync(TUser user)
+        public virtual async Task DeleteAsync(TUser user)
         {
             if ((object)user == null)
             {
                 throw new ArgumentNullException("user");
             }
 
-            this.Context.Delete(user);
-            Context.Flush();
-
-            return Task.FromResult(0);
+            await Context.DeleteAsync(user);
+            await Context.FlushAsync();
         }
 
-        public virtual Task UpdateAsync(TUser user)
+        public virtual async Task UpdateAsync(TUser user)
         {
             this.ThrowIfDisposed();
             if ((object)user == null)
@@ -86,10 +82,8 @@ namespace NHibernate.AspNet.Identity
                 throw new ArgumentNullException("user");
             }
 
-            this.Context.Update(user);
-            Context.Flush();
-
-            return Task.FromResult(0);
+            await Context.UpdateAsync(user);
+            await Context.FlushAsync();
         }
 
         private void ThrowIfDisposed()
@@ -129,7 +123,7 @@ namespace NHibernate.AspNet.Identity
                         where l.LoginProvider == login.LoginProvider && l.ProviderKey == login.ProviderKey
                         select u;
 
-            return Task.FromResult(query.SingleOrDefault());
+            return query.SingleOrDefaultAsync();
         }
 
         public virtual Task AddLoginAsync(TUser user, UserLoginInfo login)
@@ -150,11 +144,10 @@ namespace NHibernate.AspNet.Identity
                 LoginProvider = login.LoginProvider
             });
 
-            this.Context.SaveOrUpdate(user);
-            return Task.FromResult<int>(0);
+            return Context.SaveOrUpdateAsync(user);
         }
 
-        public virtual Task RemoveLoginAsync(TUser user, UserLoginInfo login)
+        public virtual async Task RemoveLoginAsync(TUser user, UserLoginInfo login)
         {
             this.ThrowIfDisposed();
             if ((object)user == null)
@@ -170,13 +163,24 @@ namespace NHibernate.AspNet.Identity
             if (info != null)
             {
                 user.Logins.Remove(info);
-                this.Context.Update(user);
+                await Context.UpdateAsync(user);
             }
-
-            return Task.FromResult<int>(0);
         }
 
-        public virtual Task<IList<UserLoginInfo>> GetLoginsAsync(TUser user)
+        public virtual async Task<IList<UserLoginInfo>> GetLoginsAsync(TUser user)
+        {
+            this.ThrowIfDisposed();
+            if ((object)user == null)
+            {
+                throw new ArgumentNullException("user");
+            }
+            
+            return (await user.Logins.AsQueryable().ToListAsync())
+                .Select(identityUserLogin => new UserLoginInfo(identityUserLogin.LoginProvider, identityUserLogin.ProviderKey))
+                .ToList();
+        }
+
+        public virtual async Task<IList<Claim>> GetClaimsAsync(TUser user)
         {
             this.ThrowIfDisposed();
             if ((object)user == null)
@@ -184,30 +188,9 @@ namespace NHibernate.AspNet.Identity
                 throw new ArgumentNullException("user");
             }
 
-            IList<UserLoginInfo> result = new List<UserLoginInfo>();
-            foreach (IdentityUserLogin identityUserLogin in (IEnumerable<IdentityUserLogin>)user.Logins)
-            {
-                result.Add(new UserLoginInfo(identityUserLogin.LoginProvider, identityUserLogin.ProviderKey));
-            }
-
-            return Task.FromResult<IList<UserLoginInfo>>(result);
-        }
-
-        public virtual Task<IList<Claim>> GetClaimsAsync(TUser user)
-        {
-            this.ThrowIfDisposed();
-            if ((object)user == null)
-            {
-                throw new ArgumentNullException("user");
-            }
-
-            IList<Claim> result = new List<Claim>();
-            foreach (IdentityUserClaim identityUserClaim in (IEnumerable<IdentityUserClaim>)user.Claims)
-            {
-                result.Add(new Claim(identityUserClaim.ClaimType, identityUserClaim.ClaimValue));
-            }
-
-            return Task.FromResult<IList<Claim>>(result);
+            return (await user.Claims.AsQueryable().ToListAsync())
+                .Select(identityUserClaim => new Claim(identityUserClaim.ClaimType, identityUserClaim.ClaimValue))
+                .ToList();
         }
 
         public virtual Task AddClaimAsync(TUser user, Claim claim)
@@ -604,15 +587,12 @@ namespace NHibernate.AspNet.Identity
 
         private Task<TUser> GetUserAggregateAsync(Expression<Func<TUser, bool>> filter)
         {
-            return Task.Run(() =>
-            {
-                // no cartesian product, batch call. Don't know if it's really needed: should we eager load or let lazy loading do its stuff?
-                var query = this.Context.Query<TUser>().Where(filter);
-                query.Fetch(p => p.Roles).ToFuture();
-                query.Fetch(p => p.Claims).ToFuture();
-                query.Fetch(p => p.Logins).ToFuture();
-                return query.ToFuture().FirstOrDefault();
-            });
+            // no cartesian product, batch call. Don't know if it's really needed: should we eager load or let lazy loading do its stuff?
+            var query = this.Context.Query<TUser>().Where(filter);
+            query.Fetch(p => p.Roles).ToFuture();
+            query.Fetch(p => p.Claims).ToFuture();
+            query.Fetch(p => p.Logins).ToFuture();
+            return query.ToFutureValue().GetValueAsync();
         }
     }
 }

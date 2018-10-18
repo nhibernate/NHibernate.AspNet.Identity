@@ -1,13 +1,13 @@
-﻿using System;
+using Microsoft.AspNet.Identity;
+using NHibernate.AspNet.Identity.Properties;
+using NHibernate.Linq;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using Microsoft.AspNet.Identity;
-using NHibernate.AspNet.Identity.Properties;
-using NHibernate.Linq;
 
 namespace NHibernate.AspNet.Identity
 {
@@ -40,56 +40,49 @@ namespace NHibernate.AspNet.Identity
         public virtual Task<TUser> FindByIdAsync(string userId)
         {
             this.ThrowIfDisposed();
-            //return Task.FromResult(this.Context.Get<TUser>((object)userId));
             return this.GetUserAggregateAsync((TUser u) => u.Id.Equals(userId));
         }
 
         public virtual Task<TUser> FindByNameAsync(string userName)
         {
             this.ThrowIfDisposed();
-            //return Task.FromResult<TUser>(Queryable.FirstOrDefault<TUser>(Queryable.Where<TUser>(this.Context.Query<TUser>(), (Expression<Func<TUser, bool>>)(u => u.UserName.ToUpper() == userName.ToUpper()))));
             return this.GetUserAggregateAsync((TUser u) => u.UserName.ToUpper() == userName.ToUpper());
         }
 
-        public virtual Task CreateAsync(TUser user)
+        public virtual async Task CreateAsync(TUser user)
         {
             this.ThrowIfDisposed();
-            if ((object)user == null)
+            if (user == null)
             {
                 throw new ArgumentNullException("user");
             }
 
-            Context.Save(user);
-            Context.Flush();
-
-            return Task.FromResult(0);
+            await Context.SaveAsync(user);
+            await Context.FlushAsync();
         }
 
-        public virtual Task DeleteAsync(TUser user)
-        {
-            if ((object)user == null)
-            {
-                throw new ArgumentNullException("user");
-            }
-
-            this.Context.Delete(user);
-            Context.Flush();
-
-            return Task.FromResult(0);
-        }
-
-        public virtual Task UpdateAsync(TUser user)
+        public virtual async Task DeleteAsync(TUser user)
         {
             this.ThrowIfDisposed();
-            if ((object)user == null)
+            if (user == null)
             {
                 throw new ArgumentNullException("user");
             }
 
-            this.Context.Update(user);
-            Context.Flush();
+            await Context.DeleteAsync(user);
+            await Context.FlushAsync();
+        }
 
-            return Task.FromResult(0);
+        public virtual async Task UpdateAsync(TUser user)
+        {
+            this.ThrowIfDisposed();
+            if (user == null)
+            {
+                throw new ArgumentNullException("user");
+            }
+
+            await Context.UpdateAsync(user);
+            await Context.FlushAsync();
         }
 
         private void ThrowIfDisposed()
@@ -103,7 +96,7 @@ namespace NHibernate.AspNet.Identity
         public void Dispose()
         {
             this.Dispose(true);
-            GC.SuppressFinalize((object)this);
+            GC.SuppressFinalize(this);
         }
 
         protected virtual void Dispose(bool disposing)
@@ -113,10 +106,10 @@ namespace NHibernate.AspNet.Identity
                 this.Context.Dispose();
             }
             this._disposed = true;
-            this.Context = (ISession)null;
+            this.Context = null;
         }
 
-        public virtual Task<TUser> FindAsync(UserLoginInfo login)
+        public virtual async Task<TUser> FindAsync(UserLoginInfo login)
         {
             this.ThrowIfDisposed();
             if (login == null)
@@ -124,18 +117,21 @@ namespace NHibernate.AspNet.Identity
                 throw new ArgumentNullException("login");
             }
 
-            var query = from u in this.Context.Query<TUser>()
-                        from l in u.Logins
-                        where l.LoginProvider == login.LoginProvider && l.ProviderKey == login.ProviderKey
-                        select u;
-
-            return Task.FromResult(query.SingleOrDefault());
+            var user = await (from u in this.Context.Query<TUser>()
+                              from l in u.Logins
+                              where l.LoginProvider == login.LoginProvider && l.ProviderKey == login.ProviderKey
+                              select u).FirstOrDefaultAsync();
+            if (user != null)
+            {
+                return await GetUserAggregateAsync(u => u.Id.Equals(user.Id));
+            }
+            return null;
         }
 
         public virtual Task AddLoginAsync(TUser user, UserLoginInfo login)
         {
             this.ThrowIfDisposed();
-            if ((object)user == null)
+            if (user == null)
             {
                 throw new ArgumentNullException("user");
             }
@@ -150,14 +146,13 @@ namespace NHibernate.AspNet.Identity
                 LoginProvider = login.LoginProvider
             });
 
-            this.Context.SaveOrUpdate(user);
-            return Task.FromResult<int>(0);
+            return Context.SaveOrUpdateAsync(user);
         }
 
-        public virtual Task RemoveLoginAsync(TUser user, UserLoginInfo login)
+        public virtual async Task RemoveLoginAsync(TUser user, UserLoginInfo login)
         {
             this.ThrowIfDisposed();
-            if ((object)user == null)
+            if (user == null)
             {
                 throw new ArgumentNullException("user");
             }
@@ -170,50 +165,36 @@ namespace NHibernate.AspNet.Identity
             if (info != null)
             {
                 user.Logins.Remove(info);
-                this.Context.Update(user);
+                await Context.UpdateAsync(user);
             }
-
-            return Task.FromResult<int>(0);
         }
 
         public virtual Task<IList<UserLoginInfo>> GetLoginsAsync(TUser user)
         {
             this.ThrowIfDisposed();
-            if ((object)user == null)
+            if (user == null)
             {
                 throw new ArgumentNullException("user");
             }
 
-            IList<UserLoginInfo> result = new List<UserLoginInfo>();
-            foreach (IdentityUserLogin identityUserLogin in (IEnumerable<IdentityUserLogin>)user.Logins)
-            {
-                result.Add(new UserLoginInfo(identityUserLogin.LoginProvider, identityUserLogin.ProviderKey));
-            }
-
-            return Task.FromResult<IList<UserLoginInfo>>(result);
+            return Task.FromResult<IList<UserLoginInfo>>(user.Logins.Select(l => new UserLoginInfo(l.LoginProvider, l.ProviderKey)).ToList());
         }
 
         public virtual Task<IList<Claim>> GetClaimsAsync(TUser user)
         {
             this.ThrowIfDisposed();
-            if ((object)user == null)
+            if (user == null)
             {
                 throw new ArgumentNullException("user");
             }
 
-            IList<Claim> result = new List<Claim>();
-            foreach (IdentityUserClaim identityUserClaim in (IEnumerable<IdentityUserClaim>)user.Claims)
-            {
-                result.Add(new Claim(identityUserClaim.ClaimType, identityUserClaim.ClaimValue));
-            }
-
-            return Task.FromResult<IList<Claim>>(result);
+            return Task.FromResult<IList<Claim>>(user.Claims.Select(c => new Claim(c.ClaimType, c.ClaimValue)).ToList());
         }
 
         public virtual Task AddClaimAsync(TUser user, Claim claim)
         {
             this.ThrowIfDisposed();
-            if ((object)user == null)
+            if (user == null)
             {
                 throw new ArgumentNullException("user");
             }
@@ -229,13 +210,13 @@ namespace NHibernate.AspNet.Identity
                 ClaimValue = claim.Value
             });
 
-            return Task.FromResult<int>(0);
+            return Task.FromResult(0);
         }
 
         public virtual Task RemoveClaimAsync(TUser user, Claim claim)
         {
             this.ThrowIfDisposed();
-            if ((object)user == null)
+            if (user == null)
             {
                 throw new ArgumentNullException("user");
             }
@@ -244,7 +225,7 @@ namespace NHibernate.AspNet.Identity
                 throw new ArgumentNullException("claim");
             }
 
-            foreach (IdentityUserClaim identityUserClaim in Enumerable.ToList<IdentityUserClaim>(Enumerable.Where<IdentityUserClaim>((IEnumerable<IdentityUserClaim>)user.Claims, (Func<IdentityUserClaim, bool>)(uc =>
+            foreach (IdentityUserClaim identityUserClaim in user.Claims.Where(uc =>
             {
                 if (uc.ClaimValue == claim.Value)
                 {
@@ -254,18 +235,18 @@ namespace NHibernate.AspNet.Identity
                 {
                     return false;
                 }
-            }))))
+            }).ToList())
             {
                 user.Claims.Remove(identityUserClaim);
             }
 
-            return Task.FromResult<int>(0);
+            return Task.FromResult(0);
         }
 
-        public virtual Task AddToRoleAsync(TUser user, string role)
+        public virtual async Task AddToRoleAsync(TUser user, string role)
         {
             this.ThrowIfDisposed();
-            if ((object)user == null)
+            if (user == null)
             {
                 throw new ArgumentNullException("user");
             }
@@ -274,21 +255,18 @@ namespace NHibernate.AspNet.Identity
                 throw new ArgumentException(Resources.ValueCannotBeNullOrEmpty, "role");
             }
 
-            IdentityRole identityRole = Queryable.SingleOrDefault<IdentityRole>(this.Context.Query<IdentityRole>(), (Expression<Func<IdentityRole, bool>>)(r => r.Name.ToUpper() == role.ToUpper()));
+            IdentityRole identityRole = await this.Context.Query<IdentityRole>().SingleOrDefaultAsync(r => r.Name.ToUpper() == role.ToUpper());
             if (identityRole == null)
             {
-                throw new InvalidOperationException(string.Format((IFormatProvider)CultureInfo.CurrentCulture, Resources.RoleNotFound, new object[1] { (object)role }));
+                throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, Resources.RoleNotFound, new object[1] { role }));
             }
             user.Roles.Add(identityRole);
-      
-            return Task.FromResult<int>(0);
-
         }
 
         public virtual Task RemoveFromRoleAsync(TUser user, string role)
         {
             this.ThrowIfDisposed();
-            if ((object)user == null)
+            if (user == null)
             {
                 throw new ArgumentNullException("user");
             }
@@ -297,32 +275,34 @@ namespace NHibernate.AspNet.Identity
                 throw new ArgumentException(Resources.ValueCannotBeNullOrEmpty, "role");
             }
 
-            IdentityRole identityUserRole = Enumerable.FirstOrDefault<IdentityRole>(Enumerable.Where<IdentityRole>((IEnumerable<IdentityRole>)user.Roles, (Func<IdentityRole, bool>)(r => r.Name.ToUpper() == role.ToUpper())));
+            IdentityRole identityUserRole = user.Roles.FirstOrDefault(r => r.Name.ToUpper() == role.ToUpper());
             if (identityUserRole != null)
             {
                 user.Roles.Remove(identityUserRole);
             }
 
-            return Task.FromResult<int>(0);
+            return Task.FromResult(0);
         }
 
         public virtual Task<IList<string>> GetRolesAsync(TUser user)
         {
             this.ThrowIfDisposed();
-            if ((object)user == null)
+            if (user == null)
             {
                 throw new ArgumentNullException("user");
             }
-            else
-            {
-                return Task.FromResult<IList<string>>((IList<string>)Enumerable.ToList<string>(Enumerable.Select<IdentityRole, string>((IEnumerable<IdentityRole>)user.Roles, (Func<IdentityRole, string>)(u => u.Name))));
-            }
+
+            var userId = user.Id;
+            var query = from r in user.Roles
+                        select r.Name;
+
+            return Task.FromResult<IList<string>>(query.ToList());
         }
 
         public virtual Task<bool> IsInRoleAsync(TUser user, string role)
         {
             this.ThrowIfDisposed();
-            if ((object)user == null)
+            if (user == null)
             {
                 throw new ArgumentNullException("user");
             }
@@ -330,63 +310,58 @@ namespace NHibernate.AspNet.Identity
             {
                 throw new ArgumentException(Resources.ValueCannotBeNullOrEmpty, "role");
             }
-            else
-            {
-                return Task.FromResult<bool>(Enumerable.Any<IdentityRole>((IEnumerable<IdentityRole>)user.Roles, (Func<IdentityRole, bool>)(r => r.Name.ToUpper() == role.ToUpper())));
-            }
+
+            return Task.FromResult((user.Roles.Any(r => r.Name.ToUpper() == role.ToUpper())));
         }
 
         public virtual Task SetPasswordHashAsync(TUser user, string passwordHash)
         {
             this.ThrowIfDisposed();
-            if ((object)user == null)
+            if (user == null)
             {
                 throw new ArgumentNullException("user");
             }
             user.PasswordHash = passwordHash;
-            return Task.FromResult<int>(0);
+            return Task.FromResult(0);
         }
 
         public virtual Task<string> GetPasswordHashAsync(TUser user)
         {
             this.ThrowIfDisposed();
-            if ((object)user == null)
+            if (user == null)
             {
                 throw new ArgumentNullException("user");
             }
-            else
-            {
-                return Task.FromResult<string>(user.PasswordHash);
-            }
+
+            return Task.FromResult(user.PasswordHash);
         }
 
         public virtual Task SetSecurityStampAsync(TUser user, string stamp)
         {
             this.ThrowIfDisposed();
-            if ((object)user == null)
+            if (user == null)
             {
                 throw new ArgumentNullException("user");
             }
+
             user.SecurityStamp = stamp;
-            return Task.FromResult<int>(0);
+            return Task.FromResult(0);
         }
 
         public virtual Task<string> GetSecurityStampAsync(TUser user)
         {
             this.ThrowIfDisposed();
-            if ((object)user == null)
+            if (user == null)
             {
                 throw new ArgumentNullException("user");
             }
-            else
-            {
-                return Task.FromResult<string>(user.SecurityStamp);
-            }
+
+            return Task.FromResult(user.SecurityStamp);
         }
 
         public virtual Task<bool> HasPasswordAsync(TUser user)
         {
-            return Task.FromResult<bool>(user.PasswordHash != null);
+            return Task.FromResult(user.PasswordHash != null);
         }
 
         public IQueryable<TUser> Users
@@ -405,7 +380,7 @@ namespace NHibernate.AspNet.Identity
             {
                 throw new ArgumentNullException("user");
             }
-            return Task.FromResult<int>(user.AccessFailedCount);
+            return Task.FromResult(user.AccessFailedCount);
         }
 
         public virtual Task<bool> GetLockoutEnabledAsync(TUser user)
@@ -415,27 +390,20 @@ namespace NHibernate.AspNet.Identity
             {
                 throw new ArgumentNullException("user");
             }
-            return Task.FromResult<bool>(user.LockoutEnabled);
+            return Task.FromResult(user.LockoutEnabled);
         }
 
         public virtual Task<DateTimeOffset> GetLockoutEndDateAsync(TUser user)
         {
-            DateTimeOffset dateTimeOffset;
             this.ThrowIfDisposed();
             if (user == null)
             {
                 throw new ArgumentNullException("user");
             }
-            if (user.LockoutEndDateUtc.HasValue)
-            {
-                DateTime? lockoutEndDateUtc = user.LockoutEndDateUtc;
-                dateTimeOffset = new DateTimeOffset(DateTime.SpecifyKind(lockoutEndDateUtc.Value, DateTimeKind.Utc));
-            }
-            else
-            {
-                dateTimeOffset = new DateTimeOffset();
-            }
-            return Task.FromResult<DateTimeOffset>(dateTimeOffset);
+
+            return Task.FromResult(user.LockoutEndDateUtc.HasValue
+                   ? new DateTimeOffset(DateTime.SpecifyKind(user.LockoutEndDateUtc.Value, DateTimeKind.Utc))
+                   : new DateTimeOffset());
         }
 
         public virtual Task<int> IncrementAccessFailedCountAsync(TUser user)
@@ -445,8 +413,8 @@ namespace NHibernate.AspNet.Identity
             {
                 throw new ArgumentNullException("user");
             }
-            user.AccessFailedCount = user.AccessFailedCount + 1;
-            return Task.FromResult<int>(user.AccessFailedCount);
+            user.AccessFailedCount++;
+            return Task.FromResult(user.AccessFailedCount);
         }
 
         public virtual Task ResetAccessFailedCountAsync(TUser user)
@@ -457,7 +425,7 @@ namespace NHibernate.AspNet.Identity
                 throw new ArgumentNullException("user");
             }
             user.AccessFailedCount = 0;
-            return Task.FromResult<int>(0);
+            return Task.FromResult(0);
         }
 
         public virtual Task SetLockoutEnabledAsync(TUser user, bool enabled)
@@ -467,28 +435,21 @@ namespace NHibernate.AspNet.Identity
             {
                 throw new ArgumentNullException("user");
             }
+
             user.LockoutEnabled = enabled;
-            return Task.FromResult<int>(0);
+            return Task.FromResult(0);
         }
 
         public virtual Task SetLockoutEndDateAsync(TUser user, DateTimeOffset lockoutEnd)
         {
-            DateTime? nullable;
             this.ThrowIfDisposed();
             if (user == null)
             {
                 throw new ArgumentNullException("user");
             }
-            if (lockoutEnd == DateTimeOffset.MinValue)
-            {
-                nullable = null;
-            }
-            else
-            {
-                nullable = new DateTime?(lockoutEnd.UtcDateTime);
-            }
-            user.LockoutEndDateUtc = nullable;
-            return Task.FromResult<int>(0);
+
+            user.LockoutEndDateUtc = lockoutEnd == DateTimeOffset.MinValue ? (DateTime?)null : lockoutEnd.UtcDateTime;
+            return Task.FromResult(0);
         }
 
         public virtual Task<TUser> FindByEmailAsync(string email)
@@ -504,7 +465,7 @@ namespace NHibernate.AspNet.Identity
             {
                 throw new ArgumentNullException("user");
             }
-            return Task.FromResult<string>(user.Email);
+            return Task.FromResult(user.Email);
         }
 
         public virtual Task<bool> GetEmailConfirmedAsync(TUser user)
@@ -514,7 +475,7 @@ namespace NHibernate.AspNet.Identity
             {
                 throw new ArgumentNullException("user");
             }
-            return Task.FromResult<bool>(user.EmailConfirmed);
+            return Task.FromResult(user.EmailConfirmed);
         }
 
         public virtual Task SetEmailAsync(TUser user, string email)
@@ -525,7 +486,7 @@ namespace NHibernate.AspNet.Identity
                 throw new ArgumentNullException("user");
             }
             user.Email = email;
-            return Task.FromResult<int>(0);
+            return Task.FromResult(0);
         }
 
         public virtual Task SetEmailConfirmedAsync(TUser user, bool confirmed)
@@ -536,7 +497,7 @@ namespace NHibernate.AspNet.Identity
                 throw new ArgumentNullException("user");
             }
             user.EmailConfirmed = confirmed;
-            return Task.FromResult<int>(0);
+            return Task.FromResult(0);
         }
 
         public virtual Task<string> GetPhoneNumberAsync(TUser user)
@@ -546,7 +507,7 @@ namespace NHibernate.AspNet.Identity
             {
                 throw new ArgumentNullException("user");
             }
-            return Task.FromResult<string>(user.PhoneNumber);
+            return Task.FromResult(user.PhoneNumber);
         }
 
         public virtual Task<bool> GetPhoneNumberConfirmedAsync(TUser user)
@@ -556,7 +517,7 @@ namespace NHibernate.AspNet.Identity
             {
                 throw new ArgumentNullException("user");
             }
-            return Task.FromResult<bool>(user.PhoneNumberConfirmed);
+            return Task.FromResult(user.PhoneNumberConfirmed);
         }
 
         public virtual Task SetPhoneNumberAsync(TUser user, string phoneNumber)
@@ -567,7 +528,7 @@ namespace NHibernate.AspNet.Identity
                 throw new ArgumentNullException("user");
             }
             user.PhoneNumber = phoneNumber;
-            return Task.FromResult<int>(0);
+            return Task.FromResult(0);
         }
 
         public virtual Task SetPhoneNumberConfirmedAsync(TUser user, bool confirmed)
@@ -578,7 +539,7 @@ namespace NHibernate.AspNet.Identity
                 throw new ArgumentNullException("user");
             }
             user.PhoneNumberConfirmed = confirmed;
-            return Task.FromResult<int>(0);
+            return Task.FromResult(0);
         }
 
         public virtual Task<bool> GetTwoFactorEnabledAsync(TUser user)
@@ -588,7 +549,7 @@ namespace NHibernate.AspNet.Identity
             {
                 throw new ArgumentNullException("user");
             }
-            return Task.FromResult<bool>(user.TwoFactorEnabled);
+            return Task.FromResult(user.TwoFactorEnabled);
         }
 
         public virtual Task SetTwoFactorEnabledAsync(TUser user, bool enabled)
@@ -599,20 +560,16 @@ namespace NHibernate.AspNet.Identity
                 throw new ArgumentNullException("user");
             }
             user.TwoFactorEnabled = enabled;
-            return Task.FromResult<int>(0);
+            return Task.FromResult(0);
         }
 
-        private Task<TUser> GetUserAggregateAsync(Expression<Func<TUser, bool>> filter)
+        protected virtual Task<TUser> GetUserAggregateAsync(Expression<Func<TUser, bool>> filter)
         {
-            return Task.Run(() =>
-            {
-                // no cartesian product, batch call. Don't know if it's really needed: should we eager load or let lazy loading do its stuff?
-                var query = this.Context.Query<TUser>().Where(filter);
-                query.Fetch(p => p.Roles).ToFuture();
-                query.Fetch(p => p.Claims).ToFuture();
-                query.Fetch(p => p.Logins).ToFuture();
-                return query.ToFuture().FirstOrDefault();
-            });
+            var query = this.Context.Query<TUser>().Where(filter);
+            query.Fetch(p => p.Roles).ToFuture();
+            query.Fetch(p => p.Claims).ToFuture();
+            query.Fetch(p => p.Logins).ToFuture();
+            return query.ToFutureValue().GetValueAsync();
         }
     }
 }
